@@ -389,7 +389,7 @@
     </div>
     <div class="header-right">
       report 2026-04-03<br>
-      gen 2026-04-03 12:23:44
+      gen 2026-04-03 13:02:38
     </div>
   </header>
 
@@ -404,11 +404,11 @@
       <div class="idx-card">
         <div class="idx-label">上证</div>
         
-        <div class="idx-val">3882.7</div>
+        <div class="idx-val">3879.9</div>
         
         
         <div class="idx-chg chg-down">
-          -0.93%
+          -1.01%
         </div>
         
       </div>
@@ -418,11 +418,11 @@
       <div class="idx-card">
         <div class="idx-label">深成</div>
         
-        <div class="idx-val">13388</div>
+        <div class="idx-val">13384</div>
         
         
         <div class="idx-chg chg-down">
-          -0.73%
+          -0.76%
         </div>
         
       </div>
@@ -432,11 +432,11 @@
       <div class="idx-card">
         <div class="idx-label">创业板</div>
         
-        <div class="idx-val">3166.1</div>
+        <div class="idx-val">3165.4</div>
         
         
         <div class="idx-chg chg-down">
-          -0.21%
+          -0.23%
         </div>
         
       </div>
@@ -551,6 +551,8 @@
             <th>PE</th>
             <th>PB</th>
             <th>股息率A</th>
+            <th>DPS</th>
+            <th>派息率</th>
             <th>市值</th>
           </tr>
         </thead>
@@ -599,6 +601,12 @@
               <span style="color:var(--up)">2.4%</span>
               
             </td>
+            <td style="color:var(--text-secondary)">
+              0.17
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
+            </td>
             <td>
               -
             </td>
@@ -646,6 +654,12 @@
               
               <span style="color:var(--up)">1.9%</span>
               
+            </td>
+            <td style="color:var(--text-secondary)">
+              0.13
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
             </td>
             <td>
               
@@ -699,6 +713,12 @@
               <span style="color:var(--up)">5.1%</span>
               
             </td>
+            <td style="color:var(--text-secondary)">
+              2.02
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
+            </td>
             <td>
               
                 
@@ -750,6 +770,12 @@
               
               <span style="color:var(--up)">2.3%</span>
               
+            </td>
+            <td style="color:var(--text-secondary)">
+              0.19
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
             </td>
             <td>
               
@@ -803,6 +829,12 @@
               <span style="color:var(--up)">2.8%</span>
               
             </td>
+            <td style="color:var(--text-secondary)">
+              2.28
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
+            </td>
             <td>
               
                 
@@ -854,6 +886,12 @@
               
               <span style="color:var(--up)">1.2%</span>
               
+            </td>
+            <td style="color:var(--text-secondary)">
+              0.05
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
             </td>
             <td>
               
@@ -907,6 +945,12 @@
               <span style="color:var(--up)">1.9%</span>
               
             </td>
+            <td style="color:var(--text-secondary)">
+              0.09
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
+            </td>
             <td>
               -
             </td>
@@ -954,6 +998,12 @@
               
               <span style="color:var(--up)">2.9%</span>
               
+            </td>
+            <td style="color:var(--text-secondary)">
+              1.75
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
             </td>
             <td>
               
@@ -1007,6 +1057,12 @@
               <span style="color:var(--up)">1.9%</span>
               
             </td>
+            <td style="color:var(--text-secondary)">
+              0.14
+            </td>
+            <td style="color:var(--text-secondary)">
+              -
+            </td>
             <td>
               
                 
@@ -1049,6 +1105,39 @@
         <h3>Dividend Yield — A vs H</h3>
         <div class="chart-canvas-wrap">
           <canvas id="div-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FINANCIAL TRENDS ═══ -->
+  <div class="anim-in" style="animation-delay:0.18s">
+    <h2 class="sec-title">Financial Trends</h2>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>ROE Trend (%)</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="roe-chart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>EPS Trend</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="eps-chart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>Revenue Growth (%)</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="rev-growth-chart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Net Profit Growth (%)</h3>
+        <div class="chart-canvas-wrap">
+          <canvas id="profit-growth-chart"></canvas>
         </div>
       </div>
     </div>
@@ -1152,10 +1241,113 @@
 
   <!-- ═══ NEWS ═══ -->
   
+  <div class="news-section anim-in" style="animation-delay:0.25s">
+    <h2 class="sec-title">Intelligence</h2>
+    
+    <div class="news-item">
+      <div class="news-item-header">
+        <span class="news-item-title">[PDF] 资本管理第三支柱信息披露报告年 - 工商银行</span>
+        
+        <span class="news-impact-badge impact-low">🟢强</span>
+        
+      </div>
+      <div class="news-detail">
+        <p><span class="nd-label">Event</span>存款平均重定价期限不长于2年。</p>
+        <p><span class="nd-label">Why</span>China's major banks face declining net interest margins due to lower loan rates and rising deposit rates. Regulatory policies aim to stabilize interest rates and support economic growth. The People's Bank of China continues to implement prudent monetary policies.。</p>
+        <p><span class="nd-label">Action</span>关注银行板块净息差变化及股息率水平</p>
+      </div>
+    </div>
+    
+    <div class="news-item">
+      <div class="news-item-header">
+        <span class="news-item-title">中国系统重要性银行增至21家</span>
+        
+        <span class="news-impact-badge impact-low">🟢强</span>
+        
+      </div>
+      <div class="news-detail">
+        <p><span class="nd-label">Event</span>logo
+
+# 中国系统重要性银行增至21家
+
+### 来源 | 《财经》杂志　文｜《财经》研究员 程维妙　编辑｜张颖馨
+
+### 2026年02月14日 16:57
+
+### 本文964字，约1分钟
+
+对比2023年名单，此次有两处变化：一是第一组由10家增至11家，浙商银行新入选中国系统重要性银。</p>
+        <p><span class="nd-label">Why</span>与中国相关，需关注后续发展</p>
+        <p><span class="nd-label">Action</span>关注银行板块净息差变化及股息率水平</p>
+      </div>
+    </div>
+    
+    <div class="news-item">
+      <div class="news-item-header">
+        <span class="news-item-title">坚守与“抛弃”：从全年运营数据看2023年运营商发展 - 通信世界</span>
+        
+        <span class="news-impact-badge impact-low">🟢强</span>
+        
+      </div>
+      <div class="news-detail">
+        <p><span class="nd-label">Event</span>登录   |   注册
+
+ 首页
+ 图书推荐
+ 下载专区
+ 沙龙●会议
+
+ 首页
+ 《通信世界》
+ 下载专区
+ 沙龙●会展
+
+首页 > 资讯详情
+
+# 坚守与“抛弃”：从全年运营数据看2023年运营商发展
+
+作者：王禹蓉 责任编辑：程琳琳 2024.01.24 09:01 来源：通信世界全媒体
+
+运。</p>
+        <p><span class="nd-label">Why</span>In 2023, China's three major telecom operators saw growth in 5G users and network expansion. The operators focused on increasing 5G penetration and launching new services. The industry continued to expand with significant investments and new applications.。</p>
+        <p><span class="nd-label">Action</span>关注电信运营商资本开支及用户数据变化</p>
+      </div>
+    </div>
+    
+    <div class="news-item">
+      <div class="news-item-header">
+        <span class="news-item-title">[PDF] 中国5G 发展和经济社会影响白皮书</span>
+        
+        <span class="news-impact-badge impact-low">🟢强</span>
+        
+      </div>
+      <div class="news-detail">
+        <p><span class="nd-label">Event</span>长三角、 珠三角等发达地区的发达行政村实现5G 网络覆盖。</p>
+        <p><span class="nd-label">Why</span>In 2023, China's three major telecom operators saw growth in 5G users and network expansion. The operators focused on increasing 5G penetration and launching new services. The industry continued to expand with significant investments and new applications.。</p>
+        <p><span class="nd-label">Action</span>关注电信运营商资本开支及用户数据变化</p>
+      </div>
+    </div>
+    
+    <div class="news-item">
+      <div class="news-item-header">
+        <span class="news-item-title">[PDF] 中国平安（601318.SH）</span>
+        
+        <span class="news-impact-badge impact-low">🟢强</span>
+        
+      </div>
+      <div class="news-detail">
+        <p><span class="nd-label">Event</span>部分中小险企已暂停披露偿付能力充足率，偿付能力不足将限制其业务开展。</p>
+        <p><span class="nd-label">Why</span>China Life Insurance's 2025 earnings report shows a 10.3% increase in operating profit, with a total cash dividend of 488.91 billion yuan, marking a 14th consecutive year of growth. The company's solvency ratio remains strong, indicating robust financial health.。</p>
+        <p><span class="nd-label">Action</span>关注银行板块净息差变化及股息率水平</p>
+      </div>
+    </div>
+    
+  </div>
+  
 
   <!-- ═══ FOOTER ═══ -->
   <footer class="footer anim-in" style="animation-delay:0.3s">
-    auto-generated / not investment advice / 2026-04-03 12:23:44
+    auto-generated / not investment advice / 2026-04-03 13:02:38
   </footer>
 
 </div>
@@ -1178,7 +1370,10 @@
       pe: null,
       pb: 0.5805,
       div_a: 2.43,
-      div_h: 1.93
+      div_h: 1.93,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1193,7 +1388,10 @@
       pe: 8.321,
       pb: 0.8752,
       div_a: 1.88,
-      div_h: 1.99
+      div_h: 1.99,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1208,7 +1406,10 @@
       pe: 6.677,
       pb: 0.9154,
       div_a: 5.07,
-      div_h: 4.41
+      div_h: 4.41,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1223,7 +1424,10 @@
       pe: 6.595,
       pb: 0.6434,
       div_a: 2.31,
-      div_h: 2.01
+      div_h: 2.01,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1238,7 +1442,10 @@
       pe: null,
       pb: 1.066,
       div_a: 2.84,
-      div_h: 2.12
+      div_h: 2.12,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1253,7 +1460,10 @@
       pe: 15.18,
       pb: 0.8215,
       div_a: 1.18,
-      div_h: 0.64
+      div_h: 0.64,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1268,7 +1478,10 @@
       pe: null,
       pb: 0.8752,
       div_a: 1.86,
-      div_h: 1.62
+      div_h: 1.62,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1283,7 +1496,10 @@
       pe: null,
       pb: 0.9557,
       div_a: 2.91,
-      div_h: 2.66
+      div_h: 2.66,
+      financial_history: [
+        
+      ]
     },
     
     
@@ -1298,7 +1514,10 @@
       pe: 7.044,
       pb: 1.063,
       div_a: 1.95,
-      div_h: 2.34
+      div_h: 2.34,
+      financial_history: [
+        
+      ]
     }
     
   ];
@@ -1471,6 +1690,76 @@
       }
     });
   }
+
+  /* ── Financial Trend Charts ── */
+  var indColors = { '银行': '#3b82f6', '电信': '#8b5cf6', '保险': '#f59e0b' };
+
+  function buildFinancialChart(canvasId, field, suffix) {
+    var ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+
+    // Collect all unique periods across all companies (sorted oldest first)
+    var periodSet = {};
+    companies.forEach(function(c) {
+      if (!c.financial_history) return;
+      c.financial_history.forEach(function(fh) {
+        periodSet[fh.period] = true;
+      });
+    });
+    var allPeriods = Object.keys(periodSet).sort();
+    if (allPeriods.length === 0) return;
+
+    var datasets = companies.map(function(c) {
+      var color = indColors[c.industry] || '#64748b';
+      var dataMap = {};
+      if (c.financial_history) {
+        c.financial_history.forEach(function(fh) {
+          dataMap[fh.period] = fh[field];
+        });
+      }
+      var data = allPeriods.map(function(p) { return dataMap[p] !== undefined ? dataMap[p] : null; });
+      return {
+        label: c.name,
+        data: data,
+        borderColor: color,
+        backgroundColor: color + '22',
+        borderWidth: 1.5,
+        pointRadius: 2,
+        pointHoverRadius: 4,
+        tension: 0.3,
+        spanGaps: true
+      };
+    });
+
+    new Chart(ctx, {
+      type: 'line',
+      data: { labels: allPeriods, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 8, padding: 8, font: { size: 10 } } },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ctx.dataset.label + ': ' + (ctx.raw !== null ? ctx.raw.toFixed(2) + suffix : 'N/A');
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 45 } },
+          y: { grid: gridOpts, ticks: { callback: function(v) { return v + suffix; } } }
+        }
+      }
+    });
+  }
+
+  buildFinancialChart('roe-chart', 'roe', '%');
+  buildFinancialChart('eps-chart', 'eps', '');
+  buildFinancialChart('rev-growth-chart', 'revenue_growth', '%');
+  buildFinancialChart('profit-growth-chart', 'profit_growth', '%');
 })();
 </script>
 </body>
