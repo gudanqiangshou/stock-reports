@@ -5,528 +5,404 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>投资晨报 2026-04-03</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root {
-      --bg-deep: #0a0e1a;
-      --bg-card: #111827;
-      --bg-card-alt: #0f1520;
-      --bg-hover: #1a2332;
-      --border: #1e293b;
-      --border-subtle: #162032;
-      --text-primary: #e2e8f0;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --text-dim: #475569;
-      --accent-gold: #f59e0b;
-      --accent-gold-dim: rgba(245,158,11,0.15);
-      --up: #10b981;
-      --up-bg: rgba(16,185,129,0.12);
-      --down: #ef4444;
-      --down-bg: rgba(239,68,68,0.12);
-      --blue: #3b82f6;
-      --blue-dim: rgba(59,130,246,0.15);
-      --purple: #8b5cf6;
-      --purple-dim: rgba(139,92,246,0.12);
-      --cyan: #06b6d4;
-      --font-display: 'DM Sans', 'Noto Sans SC', sans-serif;
-      --font-mono: 'JetBrains Mono', 'Menlo', monospace;
-      --font-body: 'Noto Sans SC', 'DM Sans', sans-serif;
+      --bg: #08090f;
+      --bg-card: #10131c;
+      --bg-card-hover: #161a28;
+      --bg-inset: #0c0e16;
+      --border: #1a1e2e;
+      --border-accent: #252a3a;
+      --text-1: #e8ecf4;
+      --text-2: #8b92a8;
+      --text-3: #555c72;
+      --gold: #e5a91a;
+      --gold-dim: rgba(229,169,26,0.12);
+      --up: #00d4aa;
+      --up-bg: rgba(0,212,170,0.10);
+      --down: #ff4d6a;
+      --down-bg: rgba(255,77,106,0.10);
+      --blue: #4a90ff;
+      --blue-dim: rgba(74,144,255,0.12);
+      --purple: #9b6dff;
+      --purple-dim: rgba(155,109,255,0.10);
+      --cyan: #00c9db;
+      --font-head: 'Outfit', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Noto Sans SC', 'Outfit', sans-serif;
     }
-
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background: var(--bg-deep);
-      color: var(--text-primary);
+      background: var(--bg);
+      color: var(--text-1);
       font-family: var(--font-body);
-      font-size: 13px;
-      line-height: 1.5;
-      min-height: 100vh;
+      font-size: 12px;
+      line-height: 1.45;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Layout ── */
-    .page {
-      max-width: 1100px;
+    /* ── Page ── */
+    .dash {
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 24px 20px 48px;
+      padding: 16px 20px 24px;
     }
 
-    /* ── Header ── */
-    .header {
+    /* ── Header: ultra compact ── */
+    .hdr {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
-      padding-bottom: 16px;
-      margin-bottom: 20px;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
       border-bottom: 1px solid var(--border);
     }
-    .header-left h1 {
-      font-family: var(--font-display);
-      font-size: 22px;
+    .hdr-title {
+      font-family: var(--font-head);
+      font-size: 18px;
       font-weight: 700;
-      color: var(--text-primary);
       letter-spacing: -0.5px;
     }
-    .header-left h1 span { color: var(--accent-gold); }
-    .header-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
+    .hdr-title em { font-style: normal; color: var(--gold); }
+    .hdr-sub {
       font-family: var(--font-mono);
-    }
-    .header-right {
-      text-align: right;
-      font-size: 11px;
-      color: var(--text-dim);
-      font-family: var(--font-mono);
-    }
-
-    /* ── Section titles ── */
-    .sec-title {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      margin-bottom: 10px;
-    }
-    .sec-title::before {
-      content: '';
-      display: inline-block;
-      width: 3px;
-      height: 12px;
-      background: var(--accent-gold);
-      border-radius: 2px;
-      margin-right: 8px;
-      vertical-align: -1px;
-    }
-
-    /* ── Global Indices ── */
-    .indices {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-    .idx-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 10px 12px;
-      transition: border-color 0.2s;
-    }
-    .idx-card:hover { border-color: var(--text-dim); }
-    .idx-label {
       font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
-    .idx-val {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .idx-chg {
-      font-family: var(--font-mono);
-      font-size: 11px;
+      color: var(--text-3);
       margin-top: 2px;
     }
-
-    /* ── Stock Table ── */
-    .stock-table-wrap {
-      margin-bottom: 24px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .stock-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 12.5px;
-    }
-    .stock-table thead th {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 8px 10px;
-      text-align: right;
-      white-space: nowrap;
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: var(--bg-deep);
-    }
-    .stock-table thead th:first-child { text-align: left; }
-    .stock-table tbody tr {
-      transition: background 0.15s;
-    }
-    .stock-table tbody tr:hover { background: var(--bg-hover); }
-    .stock-table tbody td {
-      padding: 10px 10px;
-      text-align: right;
+    .hdr-right {
       font-family: var(--font-mono);
-      font-weight: 500;
-      border-bottom: 1px solid var(--border-subtle);
-      white-space: nowrap;
+      font-size: 10px;
+      color: var(--text-3);
+      text-align: right;
     }
-    .stock-table tbody td:first-child {
-      text-align: left;
-      font-family: var(--font-body);
+
+    /* ── Section label ── */
+    .stag {
+      font-family: var(--font-head);
+      font-size: 11px;
       font-weight: 600;
-      color: var(--text-primary);
-    }
-    .stock-table .col-name {
+      color: var(--text-3);
+      letter-spacing: 1px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    .stock-table .industry-dot {
-      width: 6px;
-      height: 6px;
+    .stag::before {
+      content: '';
+      width: 3px;
+      height: 10px;
+      background: var(--gold);
+      border-radius: 1px;
+    }
+
+    /* ── Indices: horizontal ribbon ── */
+    .idx-ribbon {
+      display: flex;
+      gap: 1px;
+      margin-bottom: 12px;
+      background: var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .idx-cell {
+      flex: 1;
+      background: var(--bg-card);
+      padding: 8px 6px;
+      text-align: center;
+      min-width: 0;
+      transition: background 0.15s;
+    }
+    .idx-cell:first-child { border-radius: 8px 0 0 8px; }
+    .idx-cell:last-child { border-radius: 0 8px 8px 0; }
+    .idx-cell:hover { background: var(--bg-card-hover); }
+    .idx-name {
+      font-size: 9px;
+      color: var(--text-3);
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .idx-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+    .idx-chg {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      margin-top: 1px;
+    }
+    .c-up { color: var(--up); }
+    .c-dn { color: var(--down); }
+    .c-flat { color: var(--text-3); }
+
+    /* ── Stock Table: dense ── */
+    .tbl-wrap {
+      margin-bottom: 12px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .tbl {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+    .tbl thead th {
+      font-family: var(--font-head);
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-3);
+      letter-spacing: 0.5px;
+      padding: 6px 8px;
+      text-align: right;
+      white-space: nowrap;
+      background: var(--bg-inset);
+      border-bottom: 1px solid var(--border);
+    }
+    .tbl thead th:first-child { text-align: left; padding-left: 10px; }
+    .tbl tbody tr { transition: background 0.12s; }
+    .tbl tbody tr:hover { background: var(--bg-card-hover); }
+    .tbl tbody td {
+      padding: 5px 8px;
+      text-align: right;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 11px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      color: var(--text-2);
+    }
+    .tbl tbody td:first-child {
+      text-align: left;
+      font-family: var(--font-body);
+      font-weight: 600;
+      color: var(--text-1);
+      padding-left: 10px;
+    }
+    .tbl tbody tr:last-child td { border-bottom: none; }
+    .nm-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .idot {
+      width: 5px; height: 5px;
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .dot-bank { background: var(--blue); }
-    .dot-telecom { background: var(--purple); }
-    .dot-insurance { background: var(--accent-gold); }
-    .stock-table .codes {
-      font-size: 10px;
-      color: var(--text-dim);
+    .idot-b { background: var(--blue); }
+    .idot-t { background: var(--purple); }
+    .idot-i { background: var(--gold); }
+    .codes-s {
+      font-size: 9px;
+      color: var(--text-3);
       font-family: var(--font-mono);
       font-weight: 400;
     }
-
-    .chg-pill {
+    .pill {
       display: inline-block;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 0 5px;
+      border-radius: 3px;
+      font-size: 10px;
       font-weight: 600;
+      line-height: 18px;
     }
-    .chg-up { background: var(--up-bg); color: var(--up); }
-    .chg-down { background: var(--down-bg); color: var(--down); }
-    .chg-flat { color: var(--text-dim); }
+    .pill-up { background: var(--up-bg); color: var(--up); }
+    .pill-dn { background: var(--down-bg); color: var(--down); }
+    .pill-flat { color: var(--text-3); }
 
-    .premium-bar {
+    .pbar {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
-    .premium-bar-fill {
-      height: 4px;
-      border-radius: 2px;
+    .pbar-fill {
+      height: 3px;
+      border-radius: 1px;
       min-width: 2px;
     }
 
-    /* ── Charts Section ── */
-    .charts-row {
+    /* ── Charts grid: 2x4 compact ── */
+    .charts-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .chart-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
-      padding: 16px;
-    }
-    .chart-card h3 {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
+      gap: 8px;
       margin-bottom: 12px;
     }
-    .chart-canvas-wrap {
-      position: relative;
-      height: 200px;
-    }
-
-    /* ── Anomalies ── */
-    .anomalies {
-      margin-bottom: 24px;
-    }
-    .anomaly-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: rgba(245,158,11,0.06);
-      border-left: 2px solid var(--accent-gold);
-      border-radius: 0 6px 6px 0;
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: var(--accent-gold);
-    }
-    .anomaly-row::before {
-      content: '!';
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: var(--accent-gold-dim);
-      font-size: 10px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    /* ── News ── */
-    .news-section { margin-bottom: 24px; }
-    .news-item {
-      padding: 12px 14px;
+    .ch-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      margin-bottom: 8px;
-      transition: border-color 0.2s;
+      padding: 10px 12px 8px;
     }
-    .news-item:hover { border-color: var(--text-dim); }
-    .news-item-header {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
-    }
-    .news-item-title {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-primary);
-      flex: 1;
-    }
-    .news-impact-badge {
+    .ch-card h4 {
+      font-family: var(--font-head);
       font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 10px;
       font-weight: 600;
+      color: var(--text-3);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+    .ch-wrap {
+      position: relative;
+      height: 150px;
+    }
+
+    /* ── Alerts & Earnings: inline ── */
+    .info-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .info-panel {
+      flex: 1;
+      min-width: 280px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 4px 0;
+      font-size: 11px;
+      color: var(--gold);
+    }
+    .alert-item::before {
+      content: '⚠';
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Earnings: horizontal chips ── */
+    .earn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .earn-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      background: var(--blue-dim);
+      border: 1px solid rgba(74,144,255,0.2);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--blue);
       white-space: nowrap;
     }
-    .impact-high { background: var(--down-bg); color: var(--down); }
-    .impact-mid  { background: var(--accent-gold-dim); color: var(--accent-gold); }
-    .impact-low  { background: var(--blue-dim); color: var(--blue); }
-    .news-detail {
-      font-size: 11.5px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-    .news-detail .nd-label {
-      color: var(--text-dim);
+    .earn-chip .ec-name {
       font-weight: 600;
-      margin-right: 4px;
+      color: var(--text-1);
     }
-    .news-detail p { margin-bottom: 3px; }
-
-    /* ── Earnings ── */
-    .earnings-alerts {
-      margin-bottom: 24px;
-    }
-    .earnings-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      background: var(--blue-dim);
-      border-left: 2px solid var(--blue);
-      border-radius: 0 6px 6px 0;
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: var(--blue);
+    .earn-chip .ec-days {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      background: rgba(74,144,255,0.15);
+      padding: 1px 5px;
+      border-radius: 3px;
     }
 
     /* ── Footer ── */
-    .footer {
+    .ftr {
       text-align: center;
-      font-size: 11px;
-      color: var(--text-dim);
-      padding-top: 16px;
-      border-top: 1px solid var(--border-subtle);
+      font-size: 10px;
+      color: var(--text-3);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
       font-family: var(--font-mono);
     }
 
     /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .charts-row { grid-template-columns: 1fr; }
-      .indices { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+    @media (max-width: 900px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .ch-wrap { height: 180px; }
     }
-    @media (max-width: 600px) {
-      .header { flex-direction: column; gap: 4px; }
-      .header-right { text-align: left; }
-      .page { padding: 12px 10px 32px; }
+    @media (max-width: 700px) {
+      .idx-ribbon { flex-wrap: wrap; }
+      .idx-cell { min-width: 80px; flex: 0 0 auto; }
+      .info-row { flex-direction: column; }
+      .dash { padding: 10px 8px 16px; }
     }
 
     /* ── Animations ── */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(8px); }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .anim-in {
-      animation: fadeInUp 0.4s ease-out forwards;
-      opacity: 0;
-    }
+    .ani { animation: slideIn 0.35s ease-out forwards; opacity: 0; }
   </style>
 </head>
 <body>
-<div class="page">
+<div class="dash">
 
   <!-- ═══ HEADER ═══ -->
-  <header class="header anim-in" style="animation-delay:0s">
-    <div class="header-left">
-      <h1>AH<span>.</span>Monitor</h1>
-      <div class="header-meta">2026-04-02 周五 close</div>
+  <header class="hdr ani" style="animation-delay:0s">
+    <div>
+      <div class="hdr-title">AH<em>.</em>Monitor 投资晨报</div>
+      <div class="hdr-sub">2026-04-02 周五 收盘数据</div>
     </div>
-    <div class="header-right">
-      report 2026-04-03<br>
-      gen 2026-04-03 13:37:01
+    <div class="hdr-right">
+      报告日期 2026-04-03<br>
+      生成时间 2026-04-03 14:19:54
     </div>
   </header>
 
-  <!-- ═══ GLOBAL INDICES ═══ -->
-  <div class="anim-in" style="animation-delay:0.05s">
-    <h2 class="sec-title">Global Markets</h2>
-    <div class="indices">
+  <!-- ═══ 全球指数 ═══ -->
+  <div class="ani" style="animation-delay:0.03s">
+    <div class="stag">全球市场</div>
+    <div class="idx-ribbon">
       
       
       
-      
-      <div class="idx-card">
-        <div class="idx-label">上证</div>
+      <div class="idx-cell">
+        <div class="idx-name">上证</div>
         
-        <div class="idx-val">3879.3</div>
+        <div class="idx-num">3883.8</div>
         
         
-        <div class="idx-chg chg-down">
-          -1.02%
+        <div class="idx-chg c-dn">
+          -0.91%
         </div>
         
       </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">深成</div>
-        
-        <div class="idx-val">13394</div>
-        
-        
-        <div class="idx-chg chg-down">
-          -0.69%
-        </div>
-        
-      </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">创业板</div>
-        
-        <div class="idx-val">3165.6</div>
-        
-        
-        <div class="idx-chg chg-down">
-          -0.22%
-        </div>
-        
-      </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">恒生</div>
-        
-        <div class="idx-val">25117</div>
-        
-        
-        <div class="idx-chg chg-down">
-          -0.70%
-        </div>
-        
-      </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">恒科</div>
-        
-        <div class="idx-val">4679.1</div>
-        
-        
-        <div class="idx-chg chg-down">
-          -1.63%
-        </div>
-        
-      </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">S&P500</div>
-        
-        <div class="idx-val">6582.7</div>
-        
-        
-        <div class="idx-chg chg-up">
-          +0.11%
-        </div>
-        
-      </div>
       
       
       
-      <div class="idx-card">
-        <div class="idx-label">NASDAQ</div>
-        
-        <div class="idx-val">21879</div>
-        
-        
-        <div class="idx-chg chg-up">
-          +0.18%
-        </div>
-        
-      </div>
       
-      
-      
-      <div class="idx-card">
-        <div class="idx-label">DJI</div>
+      <div class="idx-cell">
+        <div class="idx-name">港币汇率</div>
         
-        <div class="idx-val">46505</div>
-        
-        
-        <div class="idx-chg chg-down">
-          -0.13%
-        </div>
-        
-      </div>
-      
-      
-      
-      <div class="idx-card">
-        <div class="idx-label">AH溢价</div>
-        
-        <div class="idx-val">120.4</div>
-        
-        
-      </div>
-      
-      
-      
-      <div class="idx-card">
-        <div class="idx-label">HKD/CNY</div>
-        
-        <div class="idx-val">0.9193</div>
+        <div class="idx-num">0.9193</div>
         
         
       </div>
@@ -535,25 +411,26 @@
     </div>
   </div>
 
-  <!-- ═══ STOCK TABLE ═══ -->
-  <div class="anim-in" style="animation-delay:0.1s">
-    <h2 class="sec-title">Holdings</h2>
-    <div class="stock-table-wrap">
-      <table class="stock-table">
+  <!-- ═══ 持仓总览 ═══ -->
+  <div class="ani" style="animation-delay:0.06s">
+    <div class="stag">持仓总览</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
         <thead>
           <tr>
-            <th style="min-width:140px">名称</th>
+            <th>名称</th>
             <th>A股价</th>
             <th>A涨跌</th>
-            <th>H股价</th>
+            <th>H股价(港)</th>
             <th>H涨跌</th>
             <th>AH溢价</th>
             <th>PE</th>
             <th>PB</th>
             <th>股息率A</th>
+            <th>股息率H</th>
             <th>DPS</th>
             <th>派息率</th>
-            <th>市值</th>
+            <th>总市值</th>
           </tr>
         </thead>
         <tbody>
@@ -561,428 +438,411 @@
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-bank"></span>
+              <div class="nm-row">
+                <span class="idot idot-b"></span>
                 <span>工商银行</span>
               </div>
-              <div class="codes">601398 / 01398</div>
+              <div class="codes-s">601398 / 01398</div>
+            </td>
+            <td>7.48</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -1.97%
+              </span>
+              
             </td>
             <td>6.96</td>
             <td>
               
               
-              <span class="chg-pill chg-up">
-                +1.16%
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">7.63</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-up">
-                +0.66%
+              <span class="pill pill-up">
+                +11.36%
               </span>
               
             </td>
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:0.6171152464981144px; background:var(--accent-gold);"></span>
-                <span style="color:var(--accent-gold)">-0.8%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:10.144850992830978px; background:var(--down);"></span>
+                <span style="color:var(--down)">+16.9%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">-</td>
-            <td style="color:var(--text-secondary)">0.58</td>
-            <td>
-              
-              <span style="color:var(--up)">2.4%</span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">
-              0.17
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
-            <td>
-              -
-            </td>
-          </tr>
-          
-          
-          <tr>
-            <td>
-              <div class="col-name">
-                <span class="industry-dot dot-bank"></span>
-                <span>农业银行</span>
-              </div>
-              <div class="codes">601288 / 01288</div>
-            </td>
-            <td>6.92</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-up">
-                +3.44%
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">5.68</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-up">
-                +1.79%
-              </span>
-              
-            </td>
-            <td>
-              
-              
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:26.022962244794158px; background:var(--down);"></span>
-                <span style="color:var(--down)">+32.5%</span>
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">8.3</td>
-            <td style="color:var(--text-secondary)">0.88</td>
-            <td>
-              
-              <span style="color:var(--up)">1.9%</span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">
-              0.13
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
-            <td>
-              
-                
-                2.4万亿
-                
-              
-            </td>
-          </tr>
-          
-          
-          <tr>
-            <td>
-              <div class="col-name">
-                <span class="industry-dot dot-bank"></span>
-                <span>招商银行</span>
-              </div>
-              <div class="codes">600036 / 03968</div>
-            </td>
-            <td>39.76</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-down">
-                -0.15%
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">39.76</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-down">
-                -0.15%
-              </span>
-              
-            </td>
-            <td>
-              
-              
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:7.024627969715437px; background:var(--accent-gold);"></span>
-                <span style="color:var(--accent-gold)">+8.8%</span>
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">6.7</td>
-            <td style="color:var(--text-secondary)">0.92</td>
-            <td>
-              
-              <span style="color:var(--up)">5.1%</span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">
-              2.02
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
-            <td>
-              
-                
-                1.0万亿
-                
-              
-            </td>
-          </tr>
-          
-          
-          <tr>
-            <td>
-              <div class="col-name">
-                <span class="industry-dot dot-bank"></span>
-                <span>中信银行</span>
-              </div>
-              <div class="codes">601998 / 00998</div>
-            </td>
-            <td>8.37</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-up">
-                +0.84%
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">8.37</td>
-            <td>
-              
-              
-              <span class="chg-pill chg-up">
-                +0.84%
-              </span>
-              
-            </td>
-            <td>
-              
-              
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:7.024627969715418px; background:var(--accent-gold);"></span>
-                <span style="color:var(--accent-gold)">+8.8%</span>
-              </span>
-              
-            </td>
-            <td style="color:var(--text-secondary)">6.6</td>
-            <td style="color:var(--text-secondary)">0.64</td>
+            <td>7.2</td>
+            <td>0.69</td>
             <td>
               
               <span style="color:var(--up)">2.3%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              0.19
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
             <td>
               
-                
-                4658亿
-                
+              <span style="color:var(--cyan)">2.1%</span>
               
+            </td>
+            <td>0.17</td>
+            <td>-</td>
+            <td>
+              -
             </td>
           </tr>
           
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-telecom"></span>
+              <div class="nm-row">
+                <span class="idot idot-b"></span>
+                <span>农业银行</span>
+              </div>
+              <div class="codes-s">601288 / 01288</div>
+            </td>
+            <td>6.81</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -1.59%
+              </span>
+              
+            </td>
+            <td>5.68</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -6.58%
+              </span>
+              
+            </td>
+            <td>
+              
+              
+              <span class="pbar">
+                <span class="pbar-fill" style="width:18.25321960481013px; background:var(--down);"></span>
+                <span style="color:var(--down)">+30.4%</span>
+              </span>
+              
+            </td>
+            <td>8.2</td>
+            <td>0.86</td>
+            <td>
+              
+              <span style="color:var(--up)">1.9%</span>
+              
+            </td>
+            <td>
+              
+              <span style="color:var(--cyan)">2.0%</span>
+              
+            </td>
+            <td>0.13</td>
+            <td>-</td>
+            <td>
+              -
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td>
+              <div class="nm-row">
+                <span class="idot idot-b"></span>
+                <span>招商银行</span>
+              </div>
+              <div class="codes-s">600036 / 03968</div>
+            </td>
+            <td>39.39</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -0.93%
+              </span>
+              
+            </td>
+            <td>49.70</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -2.74%
+              </span>
+              
+            </td>
+            <td>
+              
+              
+              <span class="pbar">
+                <span class="pbar-fill" style="width:8.271125315989579px; background:var(--up);"></span>
+                <span style="color:var(--up)">-13.8%</span>
+              </span>
+              
+            </td>
+            <td>6.6</td>
+            <td>0.91</td>
+            <td>
+              
+              <span style="color:var(--up)">5.1%</span>
+              
+            </td>
+            <td>
+              
+              <span style="color:var(--cyan)">3.5%</span>
+              
+            </td>
+            <td>2.02</td>
+            <td>-</td>
+            <td>
+              -
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td>
+              <div class="nm-row">
+                <span class="idot idot-b"></span>
+                <span>中信银行</span>
+              </div>
+              <div class="codes-s">601998 / 00998</div>
+            </td>
+            <td>8.26</td>
+            <td>
+              
+              
+              <span class="pill pill-dn">
+                -1.31%
+              </span>
+              
+            </td>
+            <td>7.92</td>
+            <td>
+              
+              
+              <span class="pill pill-up">
+                +8.05%
+              </span>
+              
+            </td>
+            <td>
+              
+              
+              <span class="pbar">
+                <span class="pbar-fill" style="width:8.070400286917563px; background:var(--gold);"></span>
+                <span style="color:var(--gold)">+13.5%</span>
+              </span>
+              
+            </td>
+            <td>6.5</td>
+            <td>0.63</td>
+            <td>
+              
+              <span style="color:var(--up)">2.3%</span>
+              
+            </td>
+            <td>
+              
+              <span style="color:var(--cyan)">2.1%</span>
+              
+            </td>
+            <td>0.19</td>
+            <td>-</td>
+            <td>
+              -
+            </td>
+          </tr>
+          
+          
+          <tr>
+            <td>
+              <div class="nm-row">
+                <span class="idot idot-t"></span>
                 <span>移动</span>
               </div>
-              <div class="codes">600941 / 00941</div>
+              <div class="codes-s">600941 / 00941</div>
             </td>
-            <td>80.06</td>
+            <td>92.84</td>
             <td>
               
               
-              <span class="chg-pill chg-up">
-                +0.29%
+              <span class="pill pill-dn">
+                -0.47%
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">93.28</td>
+            <td>80.05</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -0.61%
+              <span class="pill pill-dn">
+                -7.62%
               </span>
               
             </td>
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:5.308836671790118px; background:var(--up);"></span>
-                <span style="color:var(--up)">-6.6%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:15.69675010032836px; background:var(--down);"></span>
+                <span style="color:var(--down)">+26.2%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">-</td>
-            <td style="color:var(--text-secondary)">1.07</td>
+            <td>14.7</td>
+            <td>1.44</td>
             <td>
               
-              <span style="color:var(--up)">2.8%</span>
+              <span style="color:var(--up)">2.5%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              2.28
+            <td>
+              
+              <span style="color:var(--cyan)">2.5%</span>
+              
             </td>
-            <td style="color:var(--text-secondary)">
+            <td>2.28</td>
+            <td>-</td>
+            <td>
               -
-            </td>
-            <td>
-              
-                
-                1.7万亿
-                
-              
             </td>
           </tr>
           
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-telecom"></span>
+              <div class="nm-row">
+                <span class="idot idot-t"></span>
                 <span>联通</span>
               </div>
-              <div class="codes">600050 / 00762</div>
+              <div class="codes-s">600050 / 00762</div>
             </td>
-            <td>4.43</td>
+            <td>4.46</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -1.12%
+              <span class="pill pill-up">
+                +0.68%
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">7.08</td>
+            <td>7.08</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -0.56%
+              <span class="pill pill-dn">
+                -26.40%
               </span>
               
             </td>
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:25.548149448327777px; background:var(--up);"></span>
-                <span style="color:var(--up)">-31.9%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:18.88455076854547px; background:var(--up);"></span>
+                <span style="color:var(--up)">-31.5%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">15.2</td>
-            <td style="color:var(--text-secondary)">0.82</td>
+            <td>15.3</td>
+            <td>0.83</td>
             <td>
               
               <span style="color:var(--up)">1.2%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              0.05
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
             <td>
               
-                
-                1385亿
-                
+              <span style="color:var(--cyan)">0.6%</span>
               
+            </td>
+            <td>0.05</td>
+            <td>-</td>
+            <td>
+              -
             </td>
           </tr>
           
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-telecom"></span>
+              <div class="nm-row">
+                <span class="idot idot-t"></span>
                 <span>电信</span>
               </div>
-              <div class="codes">601728 / 00728</div>
+              <div class="codes-s">601728 / 00728</div>
             </td>
-            <td>5.66</td>
+            <td>5.71</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -0.53%
+              <span class="pill pill-up">
+                +0.53%
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">4.88</td>
+            <td>4.88</td>
             <td>
               
               
-              <span class="chg-pill chg-flat">
-                0.00%
+              <span class="pill pill-dn">
+                -14.24%
               </span>
               
             </td>
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:20.934302112415857px; background:var(--down);"></span>
-                <span style="color:var(--down)">+26.2%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:16.36946091809556px; background:var(--down);"></span>
+                <span style="color:var(--down)">+27.3%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">15.6</td>
-            <td style="color:var(--text-secondary)">1.12</td>
+            <td>15.7</td>
+            <td>1.13</td>
             <td>
               
               <span style="color:var(--up)">1.6%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              0.09
-            </td>
-            <td style="color:var(--text-secondary)">
-              -
-            </td>
             <td>
               
-                
-                5170亿
-                
+              <span style="color:var(--cyan)">1.6%</span>
               
+            </td>
+            <td>0.09</td>
+            <td>-</td>
+            <td>
+              -
             </td>
           </tr>
           
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-insurance"></span>
+              <div class="nm-row">
+                <span class="idot idot-i"></span>
                 <span>平安</span>
               </div>
-              <div class="codes">601318 / 02318</div>
+              <div class="codes-s">601318 / 02318</div>
             </td>
-            <td>60.08</td>
+            <td>57.35</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -0.66%
+              <span class="pill pill-up">
+                +0.16%
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">60.20</td>
+            <td>60.20</td>
             <td>
               
               
-              <span class="chg-pill chg-up">
+              <span class="pill pill-up">
                 +3.79%
               </span>
               
@@ -990,57 +850,54 @@
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:6.851156950506692px; background:var(--accent-gold);"></span>
-                <span style="color:var(--accent-gold)">+8.6%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:2.1785184476309727px; background:var(--gold);"></span>
+                <span style="color:var(--gold)">+3.6%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">-</td>
-            <td style="color:var(--text-secondary)">0.96</td>
+            <td>7.7</td>
+            <td>1.04</td>
             <td>
               
-              <span style="color:var(--up)">2.9%</span>
+              <span style="color:var(--up)">3.0%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              1.75
+            <td>
+              
+              <span style="color:var(--cyan)">2.5%</span>
+              
             </td>
-            <td style="color:var(--text-secondary)">
+            <td>1.75</td>
+            <td>-</td>
+            <td>
               -
-            </td>
-            <td>
-              
-                
-                1.1万亿
-                
-              
             </td>
           </tr>
           
           
           <tr>
             <td>
-              <div class="col-name">
-                <span class="industry-dot dot-insurance"></span>
+              <div class="nm-row">
+                <span class="idot idot-i"></span>
                 <span>人保</span>
               </div>
-              <div class="codes">601319 / 01339</div>
+              <div class="codes-s">601319 / 01339</div>
             </td>
-            <td>7.43</td>
+            <td>7.34</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
-                -0.80%
+              <span class="pill pill-dn">
+                -1.21%
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">5.39</td>
+            <td>5.39</td>
             <td>
               
               
-              <span class="chg-pill chg-down">
+              <span class="pill pill-dn">
                 -23.22%
               </span>
               
@@ -1048,31 +905,28 @@
             <td>
               
               
-              <span class="premium-bar">
-                <span class="premium-bar-fill" style="width:39.961592915581754px; background:var(--down);"></span>
-                <span style="color:var(--down)">+50.0%</span>
+              <span class="pbar">
+                <span class="pbar-fill" style="width:28.881368640683387px; background:var(--down);"></span>
+                <span style="color:var(--down)">+48.1%</span>
               </span>
               
             </td>
-            <td style="color:var(--text-secondary)">7.0</td>
-            <td style="color:var(--text-secondary)">1.06</td>
+            <td>7.0</td>
+            <td>1.05</td>
             <td>
               
-              <span style="color:var(--up)">1.9%</span>
+              <span style="color:var(--up)">2.0%</span>
               
             </td>
-            <td style="color:var(--text-secondary)">
-              0.14
+            <td>
+              
+              <span style="color:var(--cyan)">2.3%</span>
+              
             </td>
-            <td style="color:var(--text-secondary)">
+            <td>0.14</td>
+            <td>-</td>
+            <td>
               -
-            </td>
-            <td>
-              
-                
-                3286亿
-                
-              
             </td>
           </tr>
           
@@ -1081,73 +935,7 @@
     </div>
   </div>
 
-  <!-- ═══ CHARTS ═══ -->
-  <div class="anim-in" style="animation-delay:0.15s">
-    <h2 class="sec-title">Comparisons</h2>
-    <div class="charts-row">
-      <div class="chart-card">
-        <h3>AH Premium Distribution</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="ah-chart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <h3>Valuation — PE vs PB</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="val-chart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="charts-row">
-      <div class="chart-card">
-        <h3>A-Share Change %</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="a-chg-chart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <h3>Dividend Yield — A vs H</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="div-chart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ FINANCIAL TRENDS ═══ -->
-  <div class="anim-in" style="animation-delay:0.18s">
-    <h2 class="sec-title">Financial Trends</h2>
-    <div class="charts-row">
-      <div class="chart-card">
-        <h3>ROE Trend (%)</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="roe-chart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <h3>EPS Trend</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="eps-chart"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="charts-row">
-      <div class="chart-card">
-        <h3>Revenue Growth (%)</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="rev-growth-chart"></canvas>
-        </div>
-      </div>
-      <div class="chart-card">
-        <h3>Net Profit Growth (%)</h3>
-        <div class="chart-canvas-wrap">
-          <canvas id="profit-growth-chart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ ANOMALIES ═══ -->
+  <!-- ═══ 异动 + 财报日历（并排） ═══ -->
   
   
     
@@ -1168,162 +956,171 @@
   
     
   
+  
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
+  
+    
+    
+      
+    
   
 
-  <!-- ═══ EARNINGS ═══ -->
   
-  
+  <div class="info-row ani" style="animation-delay:0.09s">
     
     
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-    
-    
-      
-    
-  
-  
-  <div class="earnings-alerts anim-in" style="animation-delay:0.22s">
-    <h2 class="sec-title">Earnings Calendar</h2>
-    
-    <div class="earnings-row">中国工商银行 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国农业银行 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">招商银行 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中信银行 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国移动 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国联通 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国电信 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国平安 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-    <div class="earnings-row">中国人保 2026Q1 — 截止 2026-04-30（27天）</div>
-    
-  </div>
-  
-
-  <!-- ═══ NEWS ═══ -->
-  
-  <div class="news-section anim-in" style="animation-delay:0.25s">
-    <h2 class="sec-title">Intelligence</h2>
-    
-    <div class="news-item">
-      <div class="news-item-header">
-        <span class="news-item-title">中国A股港股全球抗跌 全球投资者加仓中国资产</span>
+    <div class="info-panel">
+      <div class="stag">财报日历</div>
+      <div class="earn-grid">
         
-        <span class="news-impact-badge impact-low">🟢强</span>
+        <div class="earn-chip">
+          <span class="ec-name">工商银行</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-      </div>
-      <div class="news-detail">
-        <p><span class="nd-label">Event</span>4月1日路透报道：自2月28日美以对伊朗开战以来，中国CSI300指数仅跌4.6%，显著优于印度、日本、韩国（均跌逾10%）及标普500（跌8%）。人民币兑美元3月全月持平，中国债市亦稳如泰山，全球资金正将中国视为避风港并增加配置。</p>
-        <p><span class="nd-label">Why</span>中国充裕的战略石油储备和相对完整的能源供应链使其率先从伊朗战争混乱中脱身。A股/港股相对强势 → 外资流入预期增强 → 对银行、电信、保险等高股息央企估值形成支撑。工商银行、农业银行、招商银行等大行作为中国资本市场定价锚，直接受益于外资加仓情绪；中国移动、中国电信作为稳定现金流标的亦受追捧。</p>
-        <p><span class="nd-label">Action</span>关注北向资金流入是否持续放量。若CSI300继续跑赢全球，四大行A股PB有望从当前0.6-0.7倍向0.75-0.8倍修复；招商银行PB约1.0倍，空间相对有限。中国移动H股（00941）目前PE约11倍、股息率约6.5%，在全球高波动环境下防御价值突出，可考虑在72-75港元区间逢低布局。</p>
-      </div>
-    </div>
-    
-    <div class="news-item">
-      <div class="news-item-header">
-        <span class="news-item-title">中国平安AI战略重磅披露：自动化理赔60%，2026营收预计增长9.5%</span>
+        <div class="earn-chip">
+          <span class="ec-name">农业银行</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-        <span class="news-impact-badge impact-low">🟢强</span>
+        <div class="earn-chip">
+          <span class="ec-name">招商银行</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-      </div>
-      <div class="news-detail">
-        <p><span class="nd-label">Event</span>3月31日彭博/Insurance Journal报道：中国平安披露AI深度应用成果——60%意外险/健康险理赔已自动化处理（最快51秒结案）；AI处理平安银行5000亿元贷款追收的70%；五年内客服中心人数腰斩；总员工从高峰削减逾11.8万人（减少约30%）。分析师预计平安2026年营收增长9.5%。</p>
-        <p><span class="nd-label">Why</span>AI降本增效路径清晰 → 赔付成本下降 + 运营效率提升 → 利润率改善空间扩大。零售客户人均持有平安金融产品2.94份（2015年仅2.03份），交叉销售拐点已过。中国人保若同步推进AI化，保险板块整体估值有望重估。AI降本是保险股从价值陷阱转向价值发现的核心驱动。</p>
-        <p><span class="nd-label">Action</span>中国平安A股（601318）当前PE约10倍、PB约1.1倍，相较历史均值仍有折价。若2026年净利润兑现9.5%增长，目标PE可向12倍靠拢，对应目标价约60-65元（当前约56元）。关注Q1业绩预告（4月中旬）及新业务价值增速数据。股息率约4.5%，叠加AI改善预期，性价比较高。中国人保（601319）类似逻辑，但AI落地程度需跟踪。</p>
-      </div>
-    </div>
-    
-    <div class="news-item">
-      <div class="news-item-header">
-        <span class="news-item-title">特朗普宣布未来2-3周继续强力打击伊朗 油价单日飙升7%至108美元</span>
+        <div class="earn-chip">
+          <span class="ec-name">中信银行</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-        <span class="news-impact-badge impact-mid">🟡中</span>
+        <div class="earn-chip">
+          <span class="ec-name">移动</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-      </div>
-      <div class="news-detail">
-        <p><span class="nd-label">Event</span>4月2日特朗普发表讲话，宣誓将在未来2-3周"极为强硬"打击伊朗，霍尔木兹海峡封锁持续（全球约20%石油流量受阻）。布伦特原油单日涨7%，最高触及108美元/桶；WTI 5月与6月合约价差扩至15.7美元创历史纪录，全球资本市场剧震，美股期货道琼斯跌逾1%。</p>
-        <p><span class="nd-label">Why</span>油价高企通过两条路径影响持仓：①负面——中国进口成本上升，若传导至通胀则压缩货币宽松空间，银行净息差承压预期延续；②正面——中国已提前备库、能源链相对完整，人民币汇率稳定，A股/港股仍是全球相对洼地，外资避险资金持续流入。对保险公司：投资端承压（全球权益市场波动），但承保端影响有限。</p>
-        <p><span class="nd-label">Action</span>短期建议控制仓位，等待油价走势明朗。若布伦特稳定在100-110美元区间，中国银行股股息率6%+的吸引力将更加凸显（相对美债利率4.4%仍有1.6%以上利差）。重点防范：若油价突破$130并持续，可能触发中国PPI上行 → 企业贷款违约率上升 → 银行不良率预期压估值。建议将工行/农行H股持仓比例控制在总持仓30%以内，保留流动性应对波动。</p>
-      </div>
-    </div>
-    
-    <div class="news-item">
-      <div class="news-item-header">
-        <span class="news-item-title">中国联通削减资本支出 大幅加码AI基础设施投入</span>
+        <div class="earn-chip">
+          <span class="ec-name">联通</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-        <span class="news-impact-badge impact-mid">🟡中</span>
+        <div class="earn-chip">
+          <span class="ec-name">电信</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-      </div>
-      <div class="news-detail">
-        <p><span class="nd-label">Event</span>近期报道显示中国联通（00762/600050）战略调整：削减传统5G网络资本支出，同步大幅增加AI基础设施投入，押注AI云服务突破电信营收天花板。华为同期披露2025年年报：营收8809亿元（+2.2%），净利润680亿元（+9%），旗下5G-A网络进入大规模商用阶段，中国电信已率先采用华为方案升级家庭AI智能体服务。</p>
-        <p><span class="nd-label">Why</span>电信运营商AI转型逻辑：毛利率更高的云/AI业务替代低利润管道业务 → ARPU提升 → 运营商估值从基础设施折价向科技溢价切换。中国移动AI云、中国联通数字科技、中国电信天翼云均在此赛道竞争。若AI业务收入占比从当前约15-20%提升至30%+，三大运营商PB有望从1.0-1.2倍向1.5倍迈进。</p>
-        <p><span class="nd-label">Action</span>中国移动A股（600941）PE约11倍，股息率约6%，AI转型最为领先（移动云收入增速持续30%+），是三大运营商中首选。关注中国联通H股（00762）：当前PE约9倍，AI资本支出加码若带来收入兑现，估值修复空间更大，但风险也更高。建议跟踪Q1中间业务收入增速作为验证指标，若AI云收入同比超20%，可考虑加仓中国移动至目标仓位上限。</p>
-      </div>
-    </div>
-    
-    <div class="news-item">
-      <div class="news-item-header">
-        <span class="news-item-title">加拿大财政部长4月1-4日访华 伊朗战争背景下中国外交破局</span>
+        <div class="earn-chip">
+          <span class="ec-name">平安</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-        <span class="news-impact-badge impact-low">⚪弱</span>
+        <div class="earn-chip">
+          <span class="ec-name">人保</span>
+          2026Q1
+          <span class="ec-days">27天</span>
+        </div>
         
-      </div>
-      <div class="news-detail">
-        <p><span class="nd-label">Event</span>4月1日路透报道：加拿大财政部长于4月1-4日访问中国，中国财政部证实此行。背景：美以对伊朗开战重塑全球供应链，多国寻求与中国深化经贸合作，加拿大为G7成员国中率先寻求对话者之一。</p>
-        <p><span class="nd-label">Why</span>象征意义大于实质：表明西方阵营内部对华政策出现分歧，中国外部环境边际改善。对银行板块：若中加贸易扩张，外贸融资业务有增量。对整体A股/港股：国际关系改善通常带来外资风险偏好提升，短期利好估值。但在伊朗战争持续的背景下，单一外交访问影响有限。</p>
-        <p><span class="nd-label">Action</span>暂无直接操作信号。持续跟踪G7其他成员与中国外交动向——若欧洲主要国家亦寻求与华合作，外资加仓A股/港股的趋势将进一步强化，届时可提前布局估值低位的招商银行H股（03968，当前约42港元，PB约0.95倍）。</p>
       </div>
     </div>
     
   </div>
   
 
-  <!-- ═══ FOOTER ═══ -->
-  <footer class="footer anim-in" style="animation-delay:0.3s">
-    auto-generated / not investment advice / 2026-04-03 13:37:01
+  <!-- ═══ 图表对比 ═══ -->
+  <div class="ani" style="animation-delay:0.12s">
+    <div class="stag">持仓对比</div>
+    <div class="charts-grid">
+      <div class="ch-card">
+        <h4>AH溢价率分布</h4>
+        <div class="ch-wrap"><canvas id="ah-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>估值分布 PE × PB</h4>
+        <div class="ch-wrap"><canvas id="val-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>A股涨跌幅</h4>
+        <div class="ch-wrap"><canvas id="a-chg-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>股息率对比 A / H</h4>
+        <div class="ch-wrap"><canvas id="div-chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 财务趋势 ═══ -->
+  <div class="ani" style="animation-delay:0.15s">
+    <div class="stag">财务趋势（季度）</div>
+    <div class="charts-grid">
+      <div class="ch-card">
+        <h4>ROE 趋势 (%)</h4>
+        <div class="ch-wrap"><canvas id="roe-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>每股收益 EPS</h4>
+        <div class="ch-wrap"><canvas id="eps-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>营收增长率 (%)</h4>
+        <div class="ch-wrap"><canvas id="rev-growth-chart"></canvas></div>
+      </div>
+      <div class="ch-card">
+        <h4>净利润增长率 (%)</h4>
+        <div class="ch-wrap"><canvas id="profit-growth-chart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 页脚 ═══ -->
+  <footer class="ftr ani" style="animation-delay:0.18s">
+    自动生成 · 不构成投资建议 · 2026-04-03 14:19:54
   </footer>
 
 </div>
@@ -1331,22 +1128,18 @@
 <!-- ═══ CHART.JS ═══ -->
 <script>
 (function() {
-  /* ── Data from Jinja2 ── */
   var companies = [
     
     
     {
       name: '工商银行',
       industry: '银行',
-      a_price: 6.96,
-      a_chg: 1.163,
-      h_price: 7.63,
-      h_chg: 0.6596,
-      ah_premium: -0.7713940581226431,
-      pe: null,
-      pb: 0.5805,
-      div_a: 2.43,
-      div_h: 1.93,
+      a_chg: -1.9659,
+      ah_premium: 16.90808498805163,
+      pe: 7.24,
+      pb: 0.69,
+      div_a: 2.26,
+      div_h: 2.11,
       financial_history: [
         
       ]
@@ -1356,14 +1149,11 @@
     {
       name: '农业银行',
       industry: '银行',
-      a_price: 6.92,
-      a_chg: 3.438,
-      h_price: 5.68,
-      h_chg: 1.792,
-      ah_premium: 32.528702805992694,
-      pe: 8.321,
-      pb: 0.8752,
-      div_a: 1.88,
+      a_chg: -1.5896,
+      ah_premium: 30.422032674683553,
+      pe: 8.19,
+      pb: 0.86,
+      div_a: 1.91,
       div_h: 1.99,
       financial_history: [
         
@@ -1374,15 +1164,12 @@
     {
       name: '招商银行',
       industry: '银行',
-      a_price: 39.76,
-      a_chg: -0.1507,
-      h_price: 39.76,
-      h_chg: -0.1507,
-      ah_premium: 8.780784962144295,
-      pe: 6.677,
-      pb: 0.9154,
-      div_a: 5.07,
-      div_h: 4.41,
+      a_chg: -0.9306,
+      ah_premium: -13.785208859982633,
+      pe: 6.61,
+      pb: 0.91,
+      div_a: 5.12,
+      div_h: 3.53,
       financial_history: [
         
       ]
@@ -1392,15 +1179,12 @@
     {
       name: '中信银行',
       industry: '银行',
-      a_price: 8.37,
-      a_chg: 0.8434,
-      h_price: 8.37,
-      h_chg: 0.8434,
-      ah_premium: 8.780784962144272,
-      pe: 6.595,
-      pb: 0.6434,
-      div_a: 2.31,
-      div_h: 2.01,
+      a_chg: -1.3142,
+      ah_premium: 13.450667144862605,
+      pe: 6.5,
+      pb: 0.63,
+      div_a: 2.34,
+      div_h: 2.12,
       financial_history: [
         
       ]
@@ -1410,15 +1194,12 @@
     {
       name: '移动',
       industry: '电信',
-      a_price: 80.06,
-      a_chg: 0.2851,
-      h_price: 93.28,
-      h_chg: -0.6074,
-      ah_premium: -6.636045839737648,
-      pe: null,
-      pb: 1.066,
-      div_a: 2.84,
-      div_h: 2.12,
+      a_chg: -0.4717,
+      ah_premium: 26.161250167213936,
+      pe: 14.66,
+      pb: 1.44,
+      div_a: 2.45,
+      div_h: 2.47,
       financial_history: [
         
       ]
@@ -1428,14 +1209,11 @@
     {
       name: '联通',
       industry: '电信',
-      a_price: 4.43,
-      a_chg: -1.116,
-      h_price: 7.08,
-      h_chg: -0.5618,
-      ah_premium: -31.93518681040972,
-      pe: 15.18,
-      pb: 0.8215,
-      div_a: 1.18,
+      a_chg: 0.6772,
+      ah_premium: -31.474251280909115,
+      pe: 15.28,
+      pb: 0.83,
+      div_a: 1.17,
       div_h: 0.64,
       financial_history: [
         
@@ -1446,14 +1224,11 @@
     {
       name: '电信',
       industry: '电信',
-      a_price: 5.66,
-      a_chg: -0.53,
-      h_price: 4.88,
-      h_chg: 0.0,
-      ah_premium: 26.16787764051982,
-      pe: 15.58,
-      pb: 1.12,
-      div_a: 1.6,
+      a_chg: 0.5282,
+      ah_premium: 27.2824348634926,
+      pe: 15.69,
+      pb: 1.13,
+      div_a: 1.59,
       div_h: 1.62,
       financial_history: [
         
@@ -1464,14 +1239,11 @@
     {
       name: '平安',
       industry: '保险',
-      a_price: 60.08,
-      a_chg: -0.6585,
-      h_price: 60.2,
-      h_chg: 3.7931,
-      ah_premium: 8.563946188133365,
-      pe: null,
-      pb: 0.9557,
-      div_a: 2.91,
+      a_chg: 0.1572,
+      ah_premium: 3.6308640793849545,
+      pe: 7.7,
+      pb: 1.04,
+      div_a: 3.05,
       div_h: 2.53,
       financial_history: [
         
@@ -1482,14 +1254,11 @@
     {
       name: '人保',
       industry: '保险',
-      a_price: 7.43,
-      a_chg: -0.8011,
-      h_price: 5.39,
-      h_chg: -23.2194,
-      ah_premium: 49.95199114447719,
-      pe: 7.044,
-      pb: 1.063,
-      div_a: 1.95,
+      a_chg: -1.2113,
+      ah_premium: 48.13561440113898,
+      pe: 6.97,
+      pb: 1.05,
+      div_a: 1.98,
       div_h: 2.34,
       financial_history: [
         
@@ -1499,243 +1268,67 @@
   ];
 
   var labels = companies.map(function(c) { return c.name; });
+  Chart.defaults.color = '#555c72';
+  Chart.defaults.font.family = "'Outfit', 'Noto Sans SC', sans-serif";
+  Chart.defaults.font.size = 10;
+  var G = { color: '#1a1e2e', drawBorder: false };
+  var indC = { '银行': '#4a90ff', '电信': '#9b6dff', '保险': '#e5a91a' };
 
-  /* ── Chart defaults ── */
-  Chart.defaults.color = '#64748b';
-  Chart.defaults.font.family = "'DM Sans', 'Noto Sans SC', sans-serif";
-  Chart.defaults.font.size = 11;
-
-  var gridColor = '#1e293b';
-  var gridOpts = { color: gridColor, drawBorder: false };
-
-  /* ── 1. AH Premium Bar Chart ── */
+  /* 1. AH溢价 */
   var ahCtx = document.getElementById('ah-chart');
   if (ahCtx) {
-    var ahData = companies.map(function(c) { return c.ah_premium; });
-    var ahColors = ahData.map(function(v) {
-      if (v === null) return '#334155';
-      return v > 15 ? '#ef4444' : v < -5 ? '#10b981' : '#f59e0b';
-    });
-    new Chart(ahCtx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: ahData,
-          backgroundColor: ahColors.map(function(c) { return c + '33'; }),
-          borderColor: ahColors,
-          borderWidth: 1,
-          borderRadius: 4,
-          barPercentage: 0.7
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function(ctx) { return (ctx.raw !== null ? ctx.raw.toFixed(1) + '%' : 'N/A'); }
-            }
-          }
-        },
-        scales: {
-          x: { grid: gridOpts, ticks: { callback: function(v) { return v + '%'; } } },
-          y: { grid: { display: false } }
-        }
-      }
-    });
+    var d = companies.map(function(c) { return c.ah_premium; });
+    var clr = d.map(function(v) { return v===null?'#334155':v>15?'#ff4d6a':v<-5?'#00d4aa':'#e5a91a'; });
+    new Chart(ahCtx, { type:'bar', data:{ labels:labels, datasets:[{ data:d, backgroundColor:clr.map(function(c){return c+'33';}), borderColor:clr, borderWidth:1, borderRadius:3, barPercentage:0.65 }] }, options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(c){return c.raw!==null?c.raw.toFixed(1)+'%':'N/A';}}} }, scales:{ x:{grid:G,ticks:{callback:function(v){return v+'%';}}}, y:{grid:{display:false}} } } });
   }
 
-  /* ── 2. Valuation Bubble Chart ── */
+  /* 2. PE×PB散点 */
   var valCtx = document.getElementById('val-chart');
   if (valCtx) {
-    var indColors = { '银行': '#3b82f6', '电信': '#8b5cf6', '保险': '#f59e0b' };
-    var datasets = {};
+    var ds = {};
     companies.forEach(function(c) {
-      if (c.pe === null || c.pb === null) return;
-      var ind = c.industry;
-      if (!datasets[ind]) datasets[ind] = { label: ind, data: [], backgroundColor: indColors[ind] + '55', borderColor: indColors[ind], pointRadius: 8, pointHoverRadius: 10 };
-      datasets[ind].data.push({ x: c.pe, y: c.pb, label: c.name });
+      if (c.pe===null||c.pb===null) return;
+      var ind=c.industry;
+      if (!ds[ind]) ds[ind]={label:ind,data:[],backgroundColor:indC[ind]+'55',borderColor:indC[ind],pointRadius:7,pointHoverRadius:9};
+      ds[ind].data.push({x:c.pe,y:c.pb,label:c.name});
     });
-    var dsArr = Object.values(datasets);
-    new Chart(valCtx, {
-      type: 'scatter',
-      data: { datasets: dsArr },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function(ctx) {
-                var d = ctx.raw;
-                return (d.label || '') + ' PE:' + d.x.toFixed(1) + ' PB:' + d.y.toFixed(2);
-              }
-            }
-          },
-          legend: { position: 'bottom', labels: { boxWidth: 8, padding: 12 } }
-        },
-        scales: {
-          x: { title: { display: true, text: 'PE-TTM', color: '#64748b' }, grid: gridOpts },
-          y: { title: { display: true, text: 'PB', color: '#64748b' }, grid: gridOpts }
-        }
-      }
-    });
+    new Chart(valCtx, { type:'scatter', data:{datasets:Object.values(ds)}, options:{ responsive:true,maintainAspectRatio:false, plugins:{ tooltip:{callbacks:{label:function(c){var d=c.raw;return (d.label||'')+' PE:'+d.x.toFixed(1)+' PB:'+d.y.toFixed(2);}}}, legend:{position:'bottom',labels:{boxWidth:6,padding:8,font:{size:9}}} }, scales:{ x:{title:{display:true,text:'PE-TTM',color:'#555c72',font:{size:9}},grid:G}, y:{title:{display:true,text:'PB',color:'#555c72',font:{size:9}},grid:G} } } });
   }
 
-  /* ── 3. A-Share Change Bar ── */
-  var aChgCtx = document.getElementById('a-chg-chart');
-  if (aChgCtx) {
-    var aChgData = companies.map(function(c) { return c.a_chg; });
-    var aChgColors = aChgData.map(function(v) {
-      if (v === null) return '#334155';
-      return v >= 0 ? '#10b981' : '#ef4444';
-    });
-    new Chart(aChgCtx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: aChgData,
-          backgroundColor: aChgColors.map(function(c) { return c + '44'; }),
-          borderColor: aChgColors,
-          borderWidth: 1,
-          borderRadius: 4,
-          barPercentage: 0.6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: function(ctx) { return ctx.raw !== null ? ctx.raw.toFixed(2) + '%' : 'N/A'; } } }
-        },
-        scales: {
-          x: { grid: { display: false } },
-          y: { grid: gridOpts, ticks: { callback: function(v) { return v + '%'; } } }
-        }
-      }
-    });
+  /* 3. A股涨跌 */
+  var aCtx = document.getElementById('a-chg-chart');
+  if (aCtx) {
+    var ad = companies.map(function(c){return c.a_chg;});
+    var ac = ad.map(function(v){return v===null?'#334155':v>=0?'#00d4aa':'#ff4d6a';});
+    new Chart(aCtx, { type:'bar', data:{ labels:labels, datasets:[{ data:ad, backgroundColor:ac.map(function(c){return c+'44';}), borderColor:ac, borderWidth:1, borderRadius:3, barPercentage:0.55 }] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw!==null?c.raw.toFixed(2)+'%':'N/A';}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
   }
 
-  /* ── 4. Dividend Yield Grouped Bar ── */
-  var divCtx = document.getElementById('div-chart');
-  if (divCtx) {
-    new Chart(divCtx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: 'A股',
-            data: companies.map(function(c) { return c.div_a; }),
-            backgroundColor: '#10b98144',
-            borderColor: '#10b981',
-            borderWidth: 1,
-            borderRadius: 4,
-            barPercentage: 0.7,
-            categoryPercentage: 0.8
-          },
-          {
-            label: 'H股',
-            data: companies.map(function(c) { return c.div_h; }),
-            backgroundColor: '#06b6d444',
-            borderColor: '#06b6d4',
-            borderWidth: 1,
-            borderRadius: 4,
-            barPercentage: 0.7,
-            categoryPercentage: 0.8
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 8, padding: 12 } },
-          tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + (ctx.raw !== null ? ctx.raw.toFixed(1) + '%' : 'N/A'); } } }
-        },
-        scales: {
-          x: { grid: { display: false } },
-          y: { grid: gridOpts, ticks: { callback: function(v) { return v + '%'; } } }
-        }
-      }
-    });
+  /* 4. 股息率A/H */
+  var dCtx = document.getElementById('div-chart');
+  if (dCtx) {
+    new Chart(dCtx, { type:'bar', data:{ labels:labels, datasets:[ {label:'A股',data:companies.map(function(c){return c.div_a;}),backgroundColor:'#00d4aa44',borderColor:'#00d4aa',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8}, {label:'H股',data:companies.map(function(c){return c.div_h;}),backgroundColor:'#00c9db44',borderColor:'#00c9db',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8} ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:8,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(1)+'%':'N/A');}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
   }
 
-  /* ── Financial Trend Charts ── */
-  var indColors = { '银行': '#3b82f6', '电信': '#8b5cf6', '保险': '#f59e0b' };
-
-  function buildFinancialChart(canvasId, field, suffix) {
-    var ctx = document.getElementById(canvasId);
+  /* 财务趋势 */
+  function buildTrend(id, field, suf) {
+    var ctx = document.getElementById(id);
     if (!ctx) return;
-
-    // Collect all unique periods across all companies (sorted oldest first)
-    var periodSet = {};
-    companies.forEach(function(c) {
-      if (!c.financial_history) return;
-      c.financial_history.forEach(function(fh) {
-        periodSet[fh.period] = true;
-      });
+    var ps = {};
+    companies.forEach(function(c) { if(!c.financial_history)return; c.financial_history.forEach(function(f){ps[f.period]=1;}); });
+    var ap = Object.keys(ps).sort();
+    if (!ap.length) return;
+    var dsets = companies.map(function(c) {
+      var color = indC[c.industry]||'#555c72';
+      var dm = {};
+      if(c.financial_history) c.financial_history.forEach(function(f){dm[f.period]=f[field];});
+      return { label:c.name, data:ap.map(function(p){return dm[p]!==undefined?dm[p]:null;}), borderColor:color, backgroundColor:color+'22', borderWidth:1.5, pointRadius:1.5, pointHoverRadius:3, tension:0.3, spanGaps:true };
     });
-    var allPeriods = Object.keys(periodSet).sort();
-    if (allPeriods.length === 0) return;
-
-    var datasets = companies.map(function(c) {
-      var color = indColors[c.industry] || '#64748b';
-      var dataMap = {};
-      if (c.financial_history) {
-        c.financial_history.forEach(function(fh) {
-          dataMap[fh.period] = fh[field];
-        });
-      }
-      var data = allPeriods.map(function(p) { return dataMap[p] !== undefined ? dataMap[p] : null; });
-      return {
-        label: c.name,
-        data: data,
-        borderColor: color,
-        backgroundColor: color + '22',
-        borderWidth: 1.5,
-        pointRadius: 2,
-        pointHoverRadius: 4,
-        tension: 0.3,
-        spanGaps: true
-      };
-    });
-
-    new Chart(ctx, {
-      type: 'line',
-      data: { labels: allPeriods, datasets: datasets },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { position: 'bottom', labels: { boxWidth: 8, padding: 8, font: { size: 10 } } },
-          tooltip: {
-            callbacks: {
-              label: function(ctx) {
-                return ctx.dataset.label + ': ' + (ctx.raw !== null ? ctx.raw.toFixed(2) + suffix : 'N/A');
-              }
-            }
-          }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 45 } },
-          y: { grid: gridOpts, ticks: { callback: function(v) { return v + suffix; } } }
-        }
-      }
-    });
+    new Chart(ctx, { type:'line', data:{labels:ap,datasets:dsets}, options:{ responsive:true,maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{ legend:{position:'bottom',labels:{boxWidth:6,padding:6,font:{size:9}}}, tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(2)+suf:'N/A');}}} }, scales:{ x:{grid:{display:false},ticks:{font:{size:8},maxRotation:45}}, y:{grid:G,ticks:{callback:function(v){return v+suf;}}} } } });
   }
-
-  buildFinancialChart('roe-chart', 'roe', '%');
-  buildFinancialChart('eps-chart', 'eps', '');
-  buildFinancialChart('rev-growth-chart', 'revenue_growth', '%');
-  buildFinancialChart('profit-growth-chart', 'profit_growth', '%');
+  buildTrend('roe-chart','roe','%');
+  buildTrend('eps-chart','eps','');
+  buildTrend('rev-growth-chart','revenue_growth','%');
+  buildTrend('profit-growth-chart','profit_growth','%');
 })();
 </script>
 </body>
