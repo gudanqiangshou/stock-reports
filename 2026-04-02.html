@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>股票日报 2026-04-02 周四</title>
+  <script src="../static/chart.min.js"></script>
+  <style>
+    /* ── 全局深色主题 ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: #4fc3f7; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── 页面容器 ── */
+    .page-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* ── 页头 ── */
+    .page-header {
+      text-align: center;
+      padding: 28px 0 20px;
+      border-bottom: 1px solid #2a2a4a;
+      margin-bottom: 28px;
+    }
+    .page-header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #90caf9;
+      letter-spacing: 2px;
+    }
+    .page-header .subtitle {
+      color: #9e9e9e;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    /* ── 区块标题 ── */
+    .section-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #90caf9;
+      margin: 0 0 14px;
+      padding-left: 10px;
+      border-left: 3px solid #4fc3f7;
+    }
+
+    /* ── 卡片基础 ── */
+    .card {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* ── 市场概览 ── */
+    .market-overview {
+      margin-bottom: 28px;
+    }
+    .market-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .market-item {
+      background: #16213e;
+      border-radius: 10px;
+      padding: 14px 18px;
+      flex: 1 1 200px;
+      min-width: 160px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+    .market-item .label {
+      font-size: 12px;
+      color: #9e9e9e;
+      margin-bottom: 4px;
+    }
+    .market-item .value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e0e0e0;
+    }
+    .market-item .change {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .positive { color: #4caf50; }
+    .negative { color: #f44336; }
+    .neutral  { color: #9e9e9e; }
+
+    /* ── 公司卡片 ── */
+    .companies-section { margin-bottom: 28px; }
+    .company-card {
+      background: #16213e;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
+    /* 卡片头部 */
+    .company-header {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 16px 20px;
+      background: #0f3460;
+      border-bottom: 1px solid #1a3a6a;
+    }
+    .company-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #e3f2fd;
+    }
+    .industry-badge {
+      background: #1565c0;
+      color: #90caf9;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    .stock-codes {
+      font-size: 12px;
+      color: #78909c;
+      margin-left: auto;
+    }
+    .stock-codes span {
+      margin-left: 8px;
+    }
+
+    /* 卡片内容主体 */
+    .company-body {
+      padding: 16px 20px;
+    }
+
+    /* 数据区网格 */
+    .data-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .data-block {
+      flex: 1 1 220px;
+      min-width: 180px;
+    }
+    .data-block-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #78909c;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #263254;
+    }
+
+    /* 数据表格 */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table td {
+      padding: 4px 6px;
+      font-size: 13px;
+    }
+    .data-table td:first-child {
+      color: #9e9e9e;
+      width: 50%;
+    }
+    .data-table td:last-child {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    /* 估值对比 */
+    .valuation-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .valuation-label { color: #9e9e9e; width: 60px; flex-shrink: 0; }
+    .valuation-value { font-weight: 700; min-width: 40px; }
+    .valuation-vs { color: #546e7a; font-size: 11px; }
+    .valuation-industry { color: #78909c; }
+
+    /* AH 溢价 */
+    .ah-premium-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .ah-premium-high { background: rgba(244,67,54,0.2); color: #ef5350; }
+    .ah-premium-low  { background: rgba(76,175,80,0.2); color: #66bb6a; }
+    .ah-premium-mid  { background: rgba(255,193,7,0.2); color: #ffca28; }
+
+    /* 财报日历 */
+    .earnings-calendar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 10px 14px;
+      background: #0d1b2a;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .earnings-calendar .cal-item { flex: 1 1 180px; }
+    .earnings-calendar .cal-label { color: #78909c; font-size: 11px; margin-bottom: 2px; }
+    .earnings-calendar .cal-value { color: #e0e0e0; font-weight: 600; }
+    .earnings-countdown {
+      background: rgba(79,195,247,0.15);
+      color: #4fc3f7;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* 异常提示 */
+    .anomaly-list {
+      margin-top: 10px;
+    }
+    .anomaly-item {
+      background: rgba(255,152,0,0.12);
+      border-left: 3px solid #ffa726;
+      padding: 6px 10px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #ffcc02;
+    }
+
+    /* ── 图表区域（可折叠）── */
+    .charts-toggle-btn {
+      background: #1a3a6a;
+      border: 1px solid #2a4a8a;
+      color: #90caf9;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .charts-toggle-btn:hover { background: #1e4d8a; }
+    .charts-toggle-btn .toggle-arrow { transition: transform 0.25s; }
+    .charts-toggle-btn.open .toggle-arrow { transform: rotate(180deg); }
+
+    .charts-section {
+      display: none;
+    }
+    .charts-section.open {
+      display: block;
+    }
+
+    .charts-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 6px;
+    }
+    .chart-wrapper {
+      flex: 1 1 260px;
+      min-width: 220px;
+      background: #0d1b2a;
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .chart-wrapper h4 {
+      font-size: 12px;
+      color: #78909c;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .chart-canvas-wrap {
+      position: relative;
+      height: 160px;
+    }
+
+    /* ── 新闻区域 ── */
+    .news-section { margin-bottom: 28px; }
+    .news-card {
+      background: #16213e;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .news-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: #0f2642;
+      border-bottom: 1px solid #1a3654;
+    }
+    .news-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #e3f2fd;
+      flex: 1;
+    }
+    .news-impact {
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(79,195,247,0.15);
+      color: #80deea;
+      white-space: nowrap;
+    }
+    .news-body {
+      padding: 12px 16px;
+    }
+    .news-layer {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .news-layer:last-child { margin-bottom: 0; }
+    .news-layer-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .icon-event { background: #1565c0; color: #90caf9; }
+    .icon-why   { background: #6a1b9a; color: #ce93d8; }
+    .icon-impl  { background: #1b5e20; color: #a5d6a7; }
+    .news-layer-label {
+      flex-shrink: 0;
+      color: #78909c;
+      font-size: 11px;
+      width: 32px;
+      margin-top: 3px;
+    }
+    .news-layer-text { color: #cfd8dc; flex: 1; }
+    .news-source { margin-top: 8px; font-size: 12px; color: #546e7a; }
+
+    /* ── 页脚 ── */
+    .page-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #546e7a;
+      padding-top: 20px;
+      border-top: 1px solid #1e2a3a;
+      margin-top: 10px;
+    }
+
+    /* ── 响应式 ── */
+    @media (max-width: 600px) {
+      .page-header h1 { font-size: 20px; }
+      .company-name   { font-size: 17px; }
+      .data-block     { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ========== 页头 ========== -->
+  <header class="page-header">
+    <h1>股票日报 · 2026-04-02 周四</h1>
+    <p class="subtitle">数据日期：2026-04-01 &nbsp;|&nbsp; 生成时间：2026-04-02 18:42:06</p>
+  </header>
+
+  <!-- ========== 市场概览 ========== -->
+  <section class="market-overview">
+    <h2 class="section-title">市场概览</h2>
+    <div class="market-grid">
+
+      
+      <div class="market-item">
+        <div class="label">上证指数</div>
+        <div class="value">3919.29</div>
+        <div class="change neutral">
+          -
+        </div>
+      </div>
+
+      
+      <div class="market-item">
+        <div class="label">恒生指数</div>
+        <div class="value">25120.0</div>
+        <div class="change neutral">
+          -
+        </div>
+      </div>
+
+      <div class="market-item">
+        <div class="label">AH溢价指数</div>
+        <div class="value">120.4</div>
+        <div class="change neutral">高于100表示A股溢价</div>
+      </div>
+
+      <div class="market-item">
+        <div class="label">港币/人民币汇率</div>
+        <div class="value">0.91928</div>
+        <div class="change neutral">HKD → CNY</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== 公司列表 ========== -->
+  <section class="companies-section">
+    <h2 class="section-title">持仓公司</h2>
+
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国工商银行</span>
+        
+        <span class="industry-badge">银行</span>
+        
+        <span class="stock-codes">
+          <span>A: 601398</span>
+          <span>H: 01398</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="positive">
+                    7.63
+                    (+0.6596%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>0.1023%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>2719000000000.0</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    6.96
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">19.3%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                7.378
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                0.7046
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">2.21%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">2.11%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国农业银行</span>
+        
+        <span class="industry-badge">银行</span>
+        
+        <span class="stock-codes">
+          <span>A: 601288</span>
+          <span>H: 01288</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">招商银行</span>
+        
+        <span class="industry-badge">银行</span>
+        
+        <span class="stock-codes">
+          <span>A: 600036</span>
+          <span>H: 03968</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中信银行</span>
+        
+        <span class="industry-badge">银行</span>
+        
+        <span class="stock-codes">
+          <span>A: 601998</span>
+          <span>H: 00998</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国移动</span>
+        
+        <span class="industry-badge">电信</span>
+        
+        <span class="stock-codes">
+          <span>A: 600941</span>
+          <span>H: 00941</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国联通</span>
+        
+        <span class="industry-badge">电信</span>
+        
+        <span class="stock-codes">
+          <span>A: 600050</span>
+          <span>H: 00762</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国电信</span>
+        
+        <span class="industry-badge">电信</span>
+        
+        <span class="stock-codes">
+          <span>A: 601728</span>
+          <span>H: 00728</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国平安</span>
+        
+        <span class="industry-badge">保险</span>
+        
+        <span class="stock-codes">
+          <span>A: 601318</span>
+          <span>H: 02318</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+    
+    
+    <div class="company-card">
+
+      <!-- 卡片头部 -->
+      <div class="company-header">
+        <span class="company-name">中国人保</span>
+        
+        <span class="industry-badge">保险</span>
+        
+        <span class="stock-codes">
+          <span>A: 601319</span>
+          <span>H: 01339</span>
+        </span>
+      </div>
+
+      <div class="company-body">
+
+        <!-- 数据主区 -->
+        <div class="data-grid">
+
+          <!-- A股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">A股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>市值(亿)</td>
+                <td>None</td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- H股行情 -->
+          
+          <div class="data-block">
+            <div class="data-block-title">H股行情</div>
+            <table class="data-table">
+              <tr>
+                <td>价格(港元)</td>
+                <td>
+                  
+                  <span class="neutral">
+                    None
+                    (0%)
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>成交量</td>
+                <td>None 手</td>
+              </tr>
+              <tr>
+                <td>换手率</td>
+                <td>None%</td>
+              </tr>
+              <tr>
+                <td>AH溢价</td>
+                <td>
+                  
+                  
+                  <span class="ah-premium-badge ah-premium-mid">0.0%</span>
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
+          
+
+          <!-- 估值 -->
+          <div class="data-block">
+            <div class="data-block-title">估值</div>
+            <div class="valuation-row">
+              <span class="valuation-label">PE-TTM</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+            <div class="valuation-row">
+              <span class="valuation-label">PB</span>
+              <span class="valuation-value ">
+                None
+              </span>
+              <span class="valuation-vs">vs</span>
+              <span class="valuation-industry">行业 None</span>
+            </div>
+          </div>
+
+          <!-- 股息 -->
+          <div class="data-block">
+            <div class="data-block-title">股息</div>
+            <table class="data-table">
+              <tr>
+                <td>A股股息率</td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>H股股息率<br><small style="color:#546e7a;font-size:11px">(税后20%)</small></td>
+                <td class="positive">None%</td>
+              </tr>
+              <tr>
+                <td>每股股息</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>派息率</td>
+                <td>-%</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.data-grid -->
+
+        <!-- 财报日历 -->
+        
+        <div class="earnings-calendar">
+          <div class="cal-item">
+            <div class="cal-label">上期财报</div>
+            <div class="cal-value">-</div>
+          </div>
+          <div class="cal-item">
+            <div class="cal-label">下期财报</div>
+            <div class="cal-value">
+              -
+              
+              &nbsp;<span class="earnings-countdown">天后</span>
+              
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 异常提示 -->
+        
+
+        <!-- 图表区域（可折叠） -->
+        
+
+      </div><!-- /.company-body -->
+    </div><!-- /.company-card -->
+    
+
+  </section>
+
+  <!-- ========== 新闻资讯 ========== -->
+  
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="page-footer">
+    <p>本报告由自动化程序生成，仅供参考，不构成投资建议。</p>
+    <p style="margin-top:4px;">生成时间：2026-04-02 18:42:06</p>
+  </footer>
+
+</div><!-- /.page-wrapper -->
+
+<!-- ========== JS：折叠图表 + Chart.js 初始化 ========== -->
+<script>
+  /* 折叠/展开图表区域 */
+  function toggleCharts(btn) {
+    var idx = btn.id.replace('btn-', '');
+    var section = document.getElementById('charts-' + idx);
+    if (!section) return;
+    var isOpen = section.classList.contains('open');
+    section.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    if (!isOpen && !btn.dataset.chartsInited) {
+      btn.dataset.chartsInited = '1';
+      initCharts(idx);
+    }
+  }
+
+  /* 默认图表配置 */
+  var chartDefaults = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#9e9e9e', font: { size: 11 } } }
+    },
+    scales: {
+      x: { ticks: { color: '#78909c', font: { size: 10 } }, grid: { color: '#1e2a3a' } },
+      y: { ticks: { color: '#78909c', font: { size: 10 } }, grid: { color: '#1e2a3a' } }
+    }
+  };
+
+  /* 每个公司的财务历史数据（Jinja2 注入） */
+  var companyChartData = {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  };
+
+  function initCharts(idx) {
+    var d = companyChartData[idx];
+    if (!d) return;
+
+    /* ROE 折线图 */
+    var roeCanvas = document.getElementById('roe-chart-' + idx);
+    if (roeCanvas) {
+      new Chart(roeCanvas, {
+        type: 'line',
+        data: {
+          labels: d.labels,
+          datasets: [{
+            label: 'ROE (%)',
+            data: d.roe,
+            borderColor: '#4fc3f7',
+            backgroundColor: 'rgba(79,195,247,0.1)',
+            tension: 0.3,
+            pointRadius: 4,
+            fill: true
+          }]
+        },
+        options: JSON.parse(JSON.stringify(chartDefaults))
+      });
+    }
+
+    /* EPS 折线图 */
+    var epsCanvas = document.getElementById('eps-chart-' + idx);
+    if (epsCanvas) {
+      new Chart(epsCanvas, {
+        type: 'line',
+        data: {
+          labels: d.labels,
+          datasets: [{
+            label: 'EPS',
+            data: d.eps,
+            borderColor: '#81c784',
+            backgroundColor: 'rgba(129,199,132,0.1)',
+            tension: 0.3,
+            pointRadius: 4,
+            fill: true
+          }]
+        },
+        options: JSON.parse(JSON.stringify(chartDefaults))
+      });
+    }
+
+    /* 营收/利润增速柱状图 */
+    var growthCanvas = document.getElementById('growth-chart-' + idx);
+    if (growthCanvas) {
+      new Chart(growthCanvas, {
+        type: 'bar',
+        data: {
+          labels: d.labels,
+          datasets: [
+            {
+              label: '营收增速(%)',
+              data: d.rev,
+              backgroundColor: 'rgba(79,195,247,0.6)',
+              borderColor: '#4fc3f7',
+              borderWidth: 1
+            },
+            {
+              label: '利润增速(%)',
+              data: d.profit,
+              backgroundColor: 'rgba(129,199,132,0.6)',
+              borderColor: '#81c784',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: JSON.parse(JSON.stringify(chartDefaults))
+      });
+    }
+  }
+</script>
+</body>
+</html>
