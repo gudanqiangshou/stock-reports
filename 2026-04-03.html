@@ -154,7 +154,7 @@
     </div>
     <div class="hdr-right">
       报告日期 2026-04-03<br>
-      生成时间 2026-04-03 15:35:56
+      生成时间 2026-04-03 15:50:46
     </div>
   </header>
 
@@ -295,7 +295,7 @@
       <div class="idx-cell">
         <div class="idx-name">港币汇率</div>
         
-        <div class="idx-num">0.8774</div>
+        <div class="idx-num">0.8775</div>
         
         
       </div>
@@ -464,7 +464,7 @@
             <td>
               
               
-              <span style="color:var(--up)">-9.6%</span>
+              <span style="color:var(--up)">-9.7%</span>
               
             </td>
             <td>6.6</td>
@@ -517,7 +517,7 @@
             <td>
               
               
-              <span style="color:var(--gold)">+19.2%</span>
+              <span style="color:var(--gold)">+19.1%</span>
               
             </td>
             <td>6.5</td>
@@ -952,8 +952,8 @@
     <div class="stag">持仓对比</div>
     <div class="charts-grid">
       <div class="ch-card">
-        <h4>A股涨跌幅</h4>
-        <div class="ch-wrap"><canvas id="a-chg-chart"></canvas></div>
+        <h4>区间涨跌幅（月 / 季 / 年）</h4>
+        <div class="ch-wrap"><canvas id="period-return-chart"></canvas></div>
       </div>
       <div class="ch-card">
         <h4>AH溢价率</h4>
@@ -994,7 +994,7 @@
   </div>
 
   <footer class="ftr ani" style="animation-delay:0.18s">
-    自动生成 · 不构成投资建议 · 2026-04-03 15:35:56
+    自动生成 · 不构成投资建议 · 2026-04-03 15:50:46
   </footer>
 
 </div>
@@ -1007,8 +1007,10 @@
     {
       name: '工商银行',
       industry: '银行',
-      a_chg: -1.7,
-      ah_premium: 22.813043570530844,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 22.80324640697351,
       pe: 7.25,
       pb: 0.69,
       industry_pe: 7.16,
@@ -1037,8 +1039,10 @@
     {
       name: '农业银行',
       industry: '银行',
-      a_chg: -1.16,
-      ah_premium: 37.246170831833794,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 37.23522229457612,
       pe: 8.23,
       pb: 0.87,
       industry_pe: 7.16,
@@ -1067,8 +1071,10 @@
     {
       name: '招商银行',
       industry: '银行',
-      a_chg: -0.91,
-      ah_premium: -9.649137330421864,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: -9.656344888783652,
       pe: 6.62,
       pb: 0.91,
       industry_pe: 7.16,
@@ -1097,8 +1103,10 @@
     {
       name: '中信银行',
       industry: '银行',
-      a_chg: -1.08,
-      ah_premium: 19.15098190770046,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 19.141476877747365,
       pe: 6.52,
       pb: 0.64,
       industry_pe: 7.16,
@@ -1127,8 +1135,10 @@
     {
       name: '移动',
       industry: '电信',
-      a_chg: -0.28,
-      ah_premium: 32.43643126045925,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 32.42586641050287,
       pe: 14.69,
       pb: 1.45,
       industry_pe: 15.23,
@@ -1157,8 +1167,10 @@
     {
       name: '联通',
       industry: '电信',
-      a_chg: 0.68,
-      ah_premium: -28.20502121847476,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: -28.210748518517736,
       pe: 15.28,
       pb: 0.83,
       industry_pe: 15.23,
@@ -1187,8 +1199,10 @@
     {
       name: '电信',
       industry: '电信',
-      a_chg: 0.35,
-      ah_premium: 33.12128591612296,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 33.110666433263745,
       pe: 15.72,
       pb: 1.13,
       industry_pe: 15.23,
@@ -1217,8 +1231,10 @@
     {
       name: '平安',
       industry: '保险',
-      a_chg: -0.02,
-      ah_premium: 8.385571076663823,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 8.376924835709087,
       pe: 7.69,
       pb: 1.04,
       industry_pe: 7.33,
@@ -1247,8 +1263,10 @@
     {
       name: '人保',
       industry: '保险',
-      a_chg: -1.08,
-      ah_premium: 55.414324227435394,
+      ret_month: null,
+      ret_quarter: null,
+      ret_year: null,
+      ah_premium: 55.401926362279184,
       pe: 6.97,
       pb: 1.05,
       industry_pe: 7.33,
@@ -1282,12 +1300,14 @@
   var G = { color: '#1a1e2e', drawBorder: false };
   var indC = { '银行': '#4a90ff', '电信': '#9b6dff', '保险': '#e5a91a' };
 
-  /* 1. A股涨跌 */
-  var aCtx = document.getElementById('a-chg-chart');
-  if (aCtx) {
-    var ad = companies.map(function(c){return c.a_chg;});
-    var ac = ad.map(function(v){return v===null?'#334155':v>=0?'#00d4aa':'#ff4d6a';});
-    new Chart(aCtx, { type:'bar', data:{ labels:labels, datasets:[{ data:ad, backgroundColor:ac.map(function(c){return c+'44';}), borderColor:ac, borderWidth:1, borderRadius:3, barPercentage:0.55 }] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.raw!==null?c.raw.toFixed(2)+'%':'N/A';}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
+  /* 1. 区间涨跌幅（月/季/年） */
+  var prCtx = document.getElementById('period-return-chart');
+  if (prCtx) {
+    new Chart(prCtx, { type:'bar', data:{ labels:labels, datasets:[
+      {label:'月涨跌',data:companies.map(function(c){return c.ret_month;}),backgroundColor:'#4a90ff55',borderColor:'#4a90ff',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.8},
+      {label:'季涨跌',data:companies.map(function(c){return c.ret_quarter;}),backgroundColor:'#e5a91a55',borderColor:'#e5a91a',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.8},
+      {label:'年涨跌',data:companies.map(function(c){return c.ret_year;}),backgroundColor:'#9b6dff55',borderColor:'#9b6dff',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.8}
+    ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(2)+'%':'N/A');}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
   }
 
   /* 2. AH溢价 - 横向柱状图 */
