@@ -154,7 +154,7 @@
     </div>
     <div class="hdr-right">
       报告日期 2026-04-03<br>
-      生成时间 2026-04-03 15:54:56
+      生成时间 2026-04-03 16:05:16
     </div>
   </header>
 
@@ -994,7 +994,7 @@
   </div>
 
   <footer class="ftr ani" style="animation-delay:0.18s">
-    自动生成 · 不构成投资建议 · 2026-04-03 15:54:56
+    自动生成 · 不构成投资建议 · 2026-04-03 16:05:16
   </footer>
 
 </div>
@@ -1009,8 +1009,8 @@
       industry: '银行',
       ret_month: 4.08,
       ret_quarter: 8.68,
-      ret_year: -4.46,
-      ah_premium: 22.806045437057865,
+      ret_year: 13.91,
+      ah_premium: 22.79764872956498,
       pe: 7.25,
       pb: 0.69,
       industry_pe: 7.16,
@@ -1041,8 +1041,8 @@
       industry: '银行',
       ret_month: 3.58,
       ret_quarter: 8.99,
-      ret_year: -10.12,
-      ah_premium: 37.238350269829866,
+      ret_year: 37.49,
+      ah_premium: 37.22896677181136,
       pe: 8.23,
       pb: 0.87,
       industry_pe: 7.16,
@@ -1073,8 +1073,8 @@
       industry: '银行',
       ret_month: 7.65,
       ret_quarter: 11.8,
-      ret_year: -4.52,
-      ah_premium: -9.654285703737742,
+      ret_year: -0.6,
+      ah_premium: -9.66046297728711,
       pe: 6.62,
       pb: 0.91,
       industry_pe: 7.16,
@@ -1105,8 +1105,8 @@
       industry: '银行',
       ret_month: 4.35,
       ret_quarter: 8.52,
-      ret_year: 8.66,
-      ah_premium: 19.144192445843778,
+      ret_year: 20.7,
+      ah_premium: 19.136046112901607,
       pe: 6.52,
       pb: 0.64,
       industry_pe: 7.16,
@@ -1137,8 +1137,8 @@
       industry: '电信',
       ret_month: 5.14,
       ret_quarter: 9.84,
-      ret_year: -7.3,
-      ah_premium: 32.428884767060005,
+      ret_year: -10.73,
+      ah_premium: 32.419830110141156,
       pe: 14.69,
       pb: 1.45,
       industry_pe: 15.23,
@@ -1169,8 +1169,8 @@
       industry: '电信',
       ret_month: 3.89,
       ret_quarter: 5.41,
-      ret_year: -12.38,
-      ah_premium: -28.20911224032061,
+      ret_year: -17.67,
+      ah_premium: -28.214020851155098,
       pe: 15.28,
       pb: 0.83,
       industry_pe: 15.23,
@@ -1201,8 +1201,8 @@
       industry: '电信',
       ret_month: 4.81,
       ret_quarter: 7.2,
-      ret_year: -8.65,
-      ah_premium: 33.113700398332256,
+      ret_year: -26.51,
+      ah_premium: 33.104598918013735,
       pe: 15.72,
       pb: 1.13,
       industry_pe: 15.23,
@@ -1233,8 +1233,8 @@
       industry: '保险',
       ret_month: 4.49,
       ret_quarter: 13.47,
-      ret_year: -16.79,
-      ah_premium: 8.379395049501825,
+      ret_year: 17.02,
+      ah_premium: 8.37198474591907,
       pe: 7.69,
       pb: 1.04,
       industry_pe: 7.33,
@@ -1265,8 +1265,8 @@
       industry: '保险',
       ret_month: 2.61,
       ret_quarter: 15.1,
-      ret_year: -18.6,
-      ah_premium: 55.40546840762233,
+      ret_year: 7.33,
+      ah_premium: 55.39484275595861,
       pe: 6.97,
       pb: 1.05,
       industry_pe: 7.33,
@@ -1337,8 +1337,8 @@
   var dCtx = document.getElementById('div-chart');
   if (dCtx) {
     new Chart(dCtx, { type:'bar', data:{ labels:labels, datasets:[
-      {label:'A股股息率',data:companies.map(function(c){return c.div_a;}),backgroundColor:'#e5a91a55',borderColor:'#e5a91a',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8},
-      {label:'H股股息率',data:companies.map(function(c){return c.div_h;}),backgroundColor:'#ff9f4355',borderColor:'#ff9f43',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8}
+      {label:'A股股息率',data:companies.map(function(c){return c.div_a;}),backgroundColor:'#4a90ff55',borderColor:'#4a90ff',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8},
+      {label:'H股股息率',data:companies.map(function(c){return c.div_h;}),backgroundColor:'#9b6dff55',borderColor:'#9b6dff',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8}
     ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(1)+'%':'N/A');}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
   }
 
