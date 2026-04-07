@@ -249,7 +249,7 @@
     </div>
     <div class="hdr-right">
       报告日期 2026-04-07<br>
-      生成时间 2026-04-07 17:56:52
+      生成时间 2026-04-07 18:20:33
     </div>
   </header>
 
@@ -398,7 +398,7 @@
       <div class="idx-cell">
         <div class="idx-name">港币汇率</div>
         
-        <div class="idx-num">0.8755</div>
+        <div class="idx-num">0.8756</div>
         
         
       </div>
@@ -999,6 +999,7 @@
               </tr>
             </thead>
             <tbody>
+              <!-- ═══ 实时行情（Jinja2动态数据）═══ -->
               <tr class="r-sect"><td class="r-sticky" colspan="8">实时行情 <span style="font-weight:400;color:var(--text-3)">数据源：腾讯财经 · 2026-04-07</span></td></tr>
               <tr><td class="r-sticky lbl">AH溢价率</td><td class="">+21.4%</td><td class="">+24.5%</td><td class="">-10.4%</td><td class="">+33.2%</td><td class="">+34.6%</td><td class="">-27.9%</td><td class="na-cell">纯A股</td></tr>
               <tr><td class="r-sticky lbl">PE (TTM)</td><td>7.2</td><td>7.1</td><td>6.5</td><td>14.8</td><td>15.9</td><td>15.3</td><td>19.0</td></tr>
@@ -1006,22 +1007,44 @@
               <tr><td class="r-sticky lbl">A股股息率</td><td>4.1%</td><td>4.2%</td><td>7.7%</td><td>5.1%</td><td>4.8%</td><td>3.9%</td><td>3.6%</td></tr>
               <tr><td class="r-sticky lbl">H股股息率</td><td class="">4.0%</td><td class="">4.2%</td><td class="">5.5%</td><td class="">5.5%</td><td class="">5.1%</td><td class="">2.2%</td><td class="na-cell">—</td></tr>
 
-              <tr class="r-sect"><td class="r-sticky" colspan="8">最近年报财务数据 <span style="font-weight:400;color:var(--text-3)">数据源：AKShare · 各公司年报</span></td></tr>
+              <!-- ═══ 盈利能力（年报数据）═══ -->
+              <tr class="r-sect"><td class="r-sticky" colspan="8">盈利能力 <span style="font-weight:400;color:var(--text-3)">FY2024年报 · AKShare + 年报披露</span></td></tr>
               <tr><td class="r-sticky lbl">营收增速</td><td>-2.5%</td><td>-3.0%</td><td>-0.5%</td><td>+3.1%</td><td>+3.1%</td><td>+4.6%</td><td>+8.1%</td></tr>
               <tr><td class="r-sticky lbl">净利润增速</td><td>+0.5%</td><td>+0.9%</td><td>+1.2%</td><td>+5.0%</td><td>+8.4%</td><td>+10.5%</td><td>+19.3%</td></tr>
+              <tr><td class="r-sticky lbl">净利润率</td><td>44.6%</td><td>44.8%</td><td>44.0%</td><td>13.3%</td><td>6.3%</td><td>5.3%</td><td>38.5%</td></tr>
               <tr><td class="r-sticky lbl">ROE</td><td>9.9%</td><td>10.7%</td><td>14.5%</td><td>10.4%</td><td>7.3%</td><td>5.5%</td><td>15.7%</td></tr>
 
-              <tr class="r-sect"><td class="r-sticky" colspan="8">行业特有指标 <span style="font-weight:400;color:var(--text-3)">2025年报参考值 · 需人工校准</span></td></tr>
-              <tr><td class="r-sticky lbl">净息差 NIM</td><td class="">1.42%</td><td class="">1.52%</td><td class="">1.81%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
-              <tr><td class="r-sticky lbl">不良贷款率</td><td class="">1.35%</td><td class="">1.32%</td><td class="">0.95%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
-              <tr><td class="r-sticky lbl">拨备覆盖率</td><td class="">215%</td><td class="">240%</td><td class="">411%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
-              <tr><td class="r-sticky lbl">ARPU(元/月)</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">52.3</td><td class="">46.5</td><td class="">44.8</td><td class="na-cell">—</td></tr>
-              <tr><td class="r-sticky lbl">DICT收入增速</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">+18%</td><td class="">+20%</td><td class="">+22%</td><td class="na-cell">—</td></tr>
-              <tr><td class="r-sticky lbl">分红率</td><td>30%</td><td>30%</td><td>35%</td><td>72%</td><td>70%</td><td>46%</td><td>70%</td></tr>
+              <!-- ═══ 银行专有指标（年报数据）═══ -->
+              <tr class="r-sect"><td class="r-sticky" colspan="8">银行专有指标 <span style="font-weight:400;color:var(--text-3)">FY2024年报</span></td></tr>
+              <tr><td class="r-sticky lbl">净息差 NIM</td><td class="">1.42%</td><td class="">1.51%</td><td class="">1.98%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">非息收入占比</td><td class="">22.4%</td><td class="">19.0%</td><td class="">37.4%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">不良贷款率</td><td class="">1.34%</td><td class="">1.34%</td><td class="">0.95%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">拨备覆盖率</td><td class="">215%</td><td class="">234%</td><td class="">412%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">CET1充足率</td><td class="">14.10%</td><td class="">14.48%</td><td class="">14.84%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">成本收入比</td><td class="">28.12%</td><td class="">29.58%</td><td class="">32.80%</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td></tr>
+
+              <!-- ═══ 电信专有指标（年报数据）═══ -->
+              <tr class="r-sect"><td class="r-sticky" colspan="8">电信专有指标 <span style="font-weight:400;color:var(--text-3)">FY2024年报</span></td></tr>
+              <tr><td class="r-sticky lbl">ARPU(元/月)</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">48.5</td><td class="">45.6</td><td class="">44.6</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">Capex/Revenue</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">18.4%</td><td class="">17.8%</td><td class="">15.8%</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">云/算力收入增速</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">+19%</td><td class="">+17%</td><td class="">+17%</td><td class="na-cell">—</td></tr>
+              <tr><td class="r-sticky lbl">资产负债率</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="">34.3%</td><td class="">47.3%</td><td class="">45.2%</td><td class="na-cell">—</td></tr>
+
+              <!-- ═══ 电力专有指标（年报数据）═══ -->
+              <tr class="r-sect"><td class="r-sticky" colspan="8">电力专有指标 <span style="font-weight:400;color:var(--text-3)">FY2024年报</span></td></tr>
+              <tr><td class="r-sticky lbl">装机容量</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">71.8GW</td></tr>
+              <tr><td class="r-sticky lbl">发电量(亿kWh)</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">2,959</td></tr>
+              <tr><td class="r-sticky lbl">利用小时数(h)</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">4,125</td></tr>
+              <tr><td class="r-sticky lbl">度电利润(元/kWh)</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">0.110</td></tr>
+              <tr><td class="r-sticky lbl">资产负债率</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">—</td><td class="na-cell">60.8%</td></tr>
+
+              <!-- ═══ 股东回报（年报数据）═══ -->
+              <tr class="r-sect"><td class="r-sticky" colspan="8">股东回报 <span style="font-weight:400;color:var(--text-3)">FY2024年报</span></td></tr>
+              <tr><td class="r-sticky lbl">分红率</td><td>30%</td><td>30%</td><td>35%</td><td>73%</td><td>72%</td><td>60%</td><td>71%</td></tr>
             </tbody>
           </table>
         </div>
-        <div class="r-note"><span class="v-best">■ 绿色=同行最优</span> &nbsp; <span class="v-b">■ 红色=需关注</span> &nbsp; <span class="v-w">■ 橙色=偏高</span> &emsp; "实时行情"与投资晨报同源 | "行业特有指标"来自年报披露，季度更新</div>
+        <div class="r-note"><span class="v-best">■ 绿色=同行最优</span> &nbsp; <span class="v-b">■ 红色=需关注</span> &nbsp; <span class="v-w">■ 橙色=偏高</span> &emsp; "实时行情"与投资晨报同源 | 年报数据来自FY2024年度报告</div>
       </div>
     </div>
 
@@ -1130,7 +1153,7 @@
   </div><!-- /sec-research -->
 
   <footer class="ftr ani" style="animation-delay:0.18s">
-    自动生成 · 不构成投资建议 · 2026-04-07 17:56:52
+    自动生成 · 不构成投资建议 · 2026-04-07 18:20:33
   </footer>
 
 </div>
@@ -1147,7 +1170,7 @@
       ret_month: 4.14,
       ret_quarter: 8.68,
       ret_year: 14.66,
-      ah_premium: 21.439891126840106,
+      ah_premium: 21.42463520757838,
       pe: 7.16,
       pb: 0.68,
       industry_pe: 6.94,
@@ -1180,7 +1203,7 @@
       ret_month: 4.15,
       ret_quarter: 9.25,
       ret_year: 8.51,
-      ah_premium: 24.492104990504625,
+      ah_premium: 24.476465636048417,
       pe: 7.11,
       pb: 0.7,
       industry_pe: 6.94,
@@ -1213,7 +1236,7 @@
       ret_month: 7.73,
       ret_quarter: 11.8,
       ret_year: 3.1,
-      ah_premium: -10.3942796480313,
+      ah_premium: -10.40553639095485,
       pe: 6.55,
       pb: 0.9,
       industry_pe: 6.94,
@@ -1246,7 +1269,7 @@
       ret_month: 5.12,
       ret_quarter: 9.84,
       ret_year: -9.91,
-      ah_premium: 33.239017763616175,
+      ah_premium: 33.22227957587036,
       pe: 14.75,
       pb: 1.45,
       industry_pe: 15.31,
@@ -1279,7 +1302,7 @@
       ret_month: 4.76,
       ret_quarter: 7.2,
       ret_year: -24.3,
-      ah_premium: 34.58197947762906,
+      ah_premium: 34.56507257995367,
       pe: 15.86,
       pb: 1.14,
       industry_pe: 15.31,
@@ -1312,7 +1335,7 @@
       ret_month: 3.88,
       ret_quarter: 5.41,
       ret_year: -11.08,
-      ah_premium: -27.887067857204396,
+      ah_premium: -27.896127063864483,
       pe: 15.31,
       pb: 0.83,
       industry_pe: 15.31,
