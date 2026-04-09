@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>持仓公司横向对比 & 财报日历</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #08090f;
+      --bg-card: #10131c;
+      --bg-card-hover: #161a28;
+      --bg-inset: #0c0e16;
+      --border: #1a1e2e;
+      --border-accent: #252a3a;
+      --text-1: #e8ecf4;
+      --text-2: #8b92a8;
+      --text-3: #555c72;
+      --gold: #e5a91a;
+      --gold-dim: rgba(229,169,26,0.12);
+      --up: #00d4aa;
+      --up-bg: rgba(0,212,170,0.10);
+      --down: #ff4d6a;
+      --down-bg: rgba(255,77,106,0.10);
+      --blue: #4a90ff;
+      --blue-dim: rgba(74,144,255,0.12);
+      --purple: #9b6dff;
+      --purple-dim: rgba(155,109,255,0.10);
+      --cyan: #00c9db;
+      --cyan-dim: rgba(0,201,219,0.12);
+      --orange: #ff9f43;
+      --font-head: 'Outfit', 'Noto Sans SC', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-body: 'Noto Sans SC', 'Outfit', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text-1);
+      font-family: var(--font-body);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    .dash { max-width: 1480px; margin: 0 auto; padding: 16px 20px 40px; }
+    .header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+    .header h1 { font-family: var(--font-head); font-size: 22px; font-weight: 700; color: var(--gold); }
+    .header .sub { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+    .tab-btn {
+      padding: 8px 18px; border: none; background: none; color: var(--text-3);
+      font-family: var(--font-body); font-size: 13px; font-weight: 500; cursor: pointer;
+      border-bottom: 2px solid transparent; transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--text-2); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px; margin-bottom: 16px;
+    }
+    .card-title {
+      font-family: var(--font-head); font-size: 14px; font-weight: 600;
+      color: var(--text-1); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .card-title .badge {
+      font-size: 10px; padding: 2px 8px; border-radius: 4px;
+      font-family: var(--font-mono); font-weight: 500;
+    }
+    .badge-bank { background: var(--blue-dim); color: var(--blue); }
+    .badge-telecom { background: var(--purple-dim); color: var(--purple); }
+    .badge-power { background: var(--cyan-dim); color: var(--cyan); }
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+    th {
+      text-align: left; padding: 8px 10px; font-weight: 600; color: var(--text-2);
+      border-bottom: 1px solid var(--border-accent); font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.5px; position: sticky; top: 0; background: var(--bg-card);
+    }
+    td {
+      padding: 7px 10px; border-bottom: 1px solid var(--border); color: var(--text-1);
+      font-family: var(--font-mono); font-size: 12px;
+    }
+    td.label { font-family: var(--font-body); color: var(--text-2); font-weight: 500; }
+    tr:hover td { background: var(--bg-card-hover); }
+    .sticky-col { position: sticky; left: 0; background: var(--bg-card); z-index: 2; min-width: 150px; }
+    tr:hover .sticky-col { background: var(--bg-card-hover); }
+    .val-good { color: var(--up); }
+    .val-bad { color: var(--down); }
+    .val-warn { color: var(--orange); }
+    .val-neutral { color: var(--text-2); }
+    .val-best { color: var(--up); font-weight: 700; }
+    .sector-row td { background: var(--bg-inset); font-family: var(--font-head); font-weight: 600; color: var(--gold); font-size: 12px; letter-spacing: 0.5px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+    .cal-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px;
+    }
+    .cal-card h3 {
+      font-family: var(--font-head); font-size: 14px; font-weight: 600; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cal-table { width: 100%; }
+    .cal-table td { font-size: 11px; padding: 4px 6px; }
+    .cal-table .date-cell { font-family: var(--font-mono); }
+    .upcoming { background: var(--gold-dim); border-radius: 3px; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .dl-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; color: var(--blue); padding: 2px 8px;
+      border: 1px solid rgba(74,144,255,0.2); border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .dl-link:hover { background: var(--blue-dim); text-decoration: none; }
+    .framework-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; }
+    .metric-group { margin-bottom: 8px; }
+    .metric-group h4 {
+      font-size: 11px; color: var(--gold); font-weight: 600; margin-bottom: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .metric-list { list-style: none; }
+    .metric-list li {
+      font-size: 12px; color: var(--text-2); padding: 2px 0;
+      display: flex; gap: 6px;
+    }
+    .metric-list li::before { content: ""; color: var(--text-3); }
+    .metric-list .en { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+    .metric-list .star { color: var(--gold); }
+    .tip { position: relative; cursor: help; border-bottom: 1px dashed var(--text-3); }
+    .tip:hover::after {
+      content: attr(data-tip); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+      background: #1a1e2e; color: var(--text-1); padding: 6px 10px; border-radius: 6px;
+      font-size: 11px; white-space: normal; width: max-content; max-width: 260px; z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4); font-family: var(--font-body);
+    }
+    .source-note { font-size: 11px; color: var(--text-3); margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .data-note { font-size: 10px; color: var(--text-3); font-family: var(--font-body); font-weight: 400; }
+    /* ── Global Nav ── */
+    .gnav {
+      display: flex; align-items: center; gap: 4px; margin-bottom: 14px;
+      background: var(--bg-inset); border: 1px solid var(--border); border-radius: 10px;
+      padding: 4px; width: fit-content;
+    }
+    .gnav-btn {
+      padding: 7px 20px; border: none; border-radius: 7px; cursor: pointer;
+      font-family: var(--font-head); font-size: 12px; font-weight: 600;
+      color: var(--text-3); background: transparent; transition: all 0.2s; letter-spacing: 0.3px;
+    }
+    .gnav-btn:hover { color: var(--text-2); }
+    .gnav-btn.active { background: var(--gold-dim); color: var(--gold); box-shadow: 0 1px 4px rgba(229,169,26,0.15); }
+    .section-wrap { display: none; }
+    .section-wrap.active { display: block; }
+
+    /* ── Morning Report Header ── */
+    .hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .hdr-title { font-family: var(--font-head); font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+    .hdr-title em { font-style: normal; color: var(--gold); }
+    .hdr-sub { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); margin-top: 2px; }
+    .hdr-right { font-family: var(--font-mono); font-size: 10px; color: var(--text-3); text-align: right; }
+
+    /* ── Section label ── */
+    .stag {
+      font-family: var(--font-head); font-size: 11px; font-weight: 600;
+      color: var(--text-3); letter-spacing: 1px; margin-bottom: 6px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .stag::before { content: ''; width: 3px; height: 10px; background: var(--gold); border-radius: 1px; }
+
+    /* ── Indices ── */
+    .idx-section { margin-bottom: 12px; }
+    .idx-row { display: flex; gap: 1px; background: var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 2px; }
+    .idx-row:last-child { margin-bottom: 0; }
+    .idx-cell {
+      flex: 1; background: var(--bg-card); padding: 7px 6px; text-align: center;
+      min-width: 0; transition: background 0.15s;
+    }
+    .idx-cell:first-child { border-radius: 8px 0 0 8px; }
+    .idx-cell:last-child { border-radius: 0 8px 8px 0; }
+    .idx-cell:hover { background: var(--bg-card-hover); }
+    .idx-name { font-size: 9px; color: var(--text-3); letter-spacing: 0.3px; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .idx-num { font-family: var(--font-mono); font-size: 12px; font-weight: 600; color: var(--text-1); }
+    .idx-chg { font-family: var(--font-mono); font-size: 9px; margin-top: 1px; }
+    .c-up { color: var(--up); }
+    .c-dn { color: var(--down); }
+    .c-flat { color: var(--text-3); }
+
+    /* ── Morning Report Stock Table ── */
+    .mr-tbl-wrap { margin-bottom: 12px; overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
+    .mr-tbl { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+    .mr-tbl thead th {
+      font-family: var(--font-head); font-size: 9px; font-weight: 600; color: var(--text-3);
+      letter-spacing: 0.5px; padding: 6px 8px; text-align: right; white-space: nowrap;
+      background: var(--bg-inset); border-bottom: 1px solid var(--border);
+    }
+    .mr-tbl thead th:first-child { text-align: left; padding-left: 10px; }
+    .mr-tbl tbody tr { transition: background 0.12s; }
+    .mr-tbl tbody tr:hover { background: var(--bg-card-hover); }
+    .mr-tbl tbody td {
+      padding: 5px 8px; text-align: right; font-family: var(--font-mono);
+      font-weight: 500; font-size: 11px; border-bottom: 1px solid var(--border);
+      white-space: nowrap; color: var(--text-2);
+    }
+    .mr-tbl tbody td:first-child { text-align: left; font-family: var(--font-body); font-weight: 600; color: var(--text-1); padding-left: 10px; }
+    .mr-tbl tbody tr:last-child td { border-bottom: none; }
+    .nm-row { display: flex; align-items: center; gap: 5px; }
+    .idot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+    .idot-b { background: var(--blue); }
+    .idot-t { background: var(--purple); }
+    .idot-p { background: var(--cyan); }
+    .codes-s { font-size: 9px; color: var(--text-3); font-family: var(--font-mono); font-weight: 400; }
+    .pill { display: inline-block; padding: 0 5px; border-radius: 3px; font-size: 10px; font-weight: 600; line-height: 18px; }
+    .pill-up { background: var(--up-bg); color: var(--up); }
+    .pill-dn { background: var(--down-bg); color: var(--down); }
+    .pill-flat { color: var(--text-3); }
+
+    /* ── Charts grid ── */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .ch-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px 8px; }
+    .ch-card h4 { font-family: var(--font-head); font-size: 10px; font-weight: 600; color: var(--text-3); margin-bottom: 6px; letter-spacing: 0.3px; }
+    .ch-wrap { position: relative; height: 150px; }
+
+    /* ── Earnings chips ── */
+    .info-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .info-panel { flex: 1; min-width: 280px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+    .earn-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .earn-chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px;
+      background: var(--blue-dim); border: 1px solid rgba(74,144,255,0.2);
+      border-radius: 6px; font-size: 11px; color: var(--blue); white-space: nowrap;
+    }
+    .earn-chip .ec-name { font-weight: 600; color: var(--text-1); }
+    .earn-chip .ec-days { font-family: var(--font-mono); font-size: 10px; font-weight: 600; background: rgba(74,144,255,0.15); padding: 1px 5px; border-radius: 3px; }
+
+    /* ── Footer ── */
+    .ftr { text-align: center; font-size: 10px; color: var(--text-3); padding-top: 8px; border-top: 1px solid var(--border); font-family: var(--font-mono); }
+
+    @keyframes slideIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .ani { animation: slideIn 0.35s ease-out forwards; opacity: 0; }
+
+    @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } .ch-wrap { height: 180px; } }
+    @media (max-width: 768px) {
+      .dash { padding: 12px; }
+      .framework-grid { grid-template-columns: 1fr; }
+      .cal-grid { grid-template-columns: 1fr; }
+      table { font-size: 11px; }
+      .idx-row { flex-wrap: wrap; } .idx-cell { min-width: 80px; flex: 0 0 auto; }
+      .info-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="dash">
+
+  <!-- GLOBAL NAV -->
+  <div class="gnav">
+    <button class="gnav-btn active" onclick="switchSection('report')">投资晨报</button>
+    <button class="gnav-btn" onclick="switchSection('research')">持仓研究</button>
+  </div>
+
+  <!-- ====== SECTION: 晨报 ====== -->
+  <div id="sec-report" class="section-wrap active">
+
+  <header class="hdr ani" style="animation-delay:0s">
+    <div>
+      <div class="hdr-title">AH<em>.</em>Monitor 投资晨报</div>
+      <div class="hdr-sub">2026-04-07 收盘数据（静态快照）</div>
+    </div>
+    <div class="hdr-right">数据日期 2026-04-08</div>
+  </header>
+
+  <!-- 全球市场 -->
+  <div class="ani" style="animation-delay:0.03s">
+    <div class="stag">全球市场</div>
+    <div class="idx-section">
+      <div class="idx-row">
+        <div class="idx-cell"><div class="idx-name">上证</div><div class="idx-num">3951.4</div><div class="idx-chg c-up">+1.57%</div></div>
+        <div class="idx-cell"><div class="idx-name">深成</div><div class="idx-num">13843</div><div class="idx-chg c-up">+3.30%</div></div>
+        <div class="idx-cell"><div class="idx-name">创业板</div><div class="idx-num">3291.9</div><div class="idx-chg c-up">+4.15%</div></div>
+        <div class="idx-cell"><div class="idx-name">恒生</div><div class="idx-num">25742</div><div class="idx-chg c-up">+2.49%</div></div>
+        <div class="idx-cell"><div class="idx-name">恒科</div><div class="idx-num">4840.6</div><div class="idx-chg c-up">+3.45%</div></div>
+      </div>
+      <div class="idx-row">
+        <div class="idx-cell"><div class="idx-name">标普500</div><div class="idx-num">6616.9</div><div class="idx-chg c-up">+0.08%</div></div>
+        <div class="idx-cell"><div class="idx-name">纳指</div><div class="idx-num">22018</div><div class="idx-chg c-up">+0.10%</div></div>
+        <div class="idx-cell"><div class="idx-name">道指</div><div class="idx-num">46584</div><div class="idx-chg c-dn">-0.18%</div></div>
+        <div class="idx-cell"><div class="idx-name">AH溢价</div><div class="idx-num">118.7</div></div>
+        <div class="idx-cell"><div class="idx-name">美元汇率</div><div class="idx-num">7.2698</div></div>
+        <div class="idx-cell"><div class="idx-name">港币汇率</div><div class="idx-num">0.8726</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 持仓总览 -->
+  <div class="ani" style="animation-delay:0.06s">
+    <div class="stag">持仓总览</div>
+    <div class="mr-tbl-wrap">
+      <table class="mr-tbl">
+        <thead>
+          <tr>
+            <th>名称</th><th>A股价</th><th>A涨跌</th><th>H股价(港)</th><th>H涨跌</th>
+            <th>AH溢价</th><th>PE</th><th>PB</th><th>股息A</th><th>股息H</th><th>DPS</th><th>市值(亿)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-b"></span><span>工商银行</span></div><div class="codes-s">601398 / 01398</div></td>
+            <td>7.29</td><td><span class="pill pill-dn">-1.49%</span></td>
+            <td>6.88</td><td><span class="pill pill-dn">-1.15%</span></td>
+            <td><span style="color:var(--gold)">+21.4%</span></td>
+            <td>7.0</td><td>0.67</td>
+            <td><span style="color:var(--gold)">4.2%</span></td>
+            <td><span style="color:var(--orange)">4.1%</span></td>
+            <td>0.31</td><td>25982</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-b"></span><span>建设银行</span></div><div class="codes-s">601939 / 00939</div></td>
+            <td>9.19</td><td><span class="pill pill-dn">-0.22%</span></td>
+            <td>8.48</td><td><span class="pill pill-up">+0.36%</span></td>
+            <td><span style="color:var(--gold)">+24.2%</span></td>
+            <td>7.1</td><td>0.69</td>
+            <td><span style="color:var(--gold)">4.3%</span></td>
+            <td><span style="color:var(--orange)">4.2%</span></td>
+            <td>0.39</td><td>24041</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-b"></span><span>招商银行</span></div><div class="codes-s">600036 / 03968</div></td>
+            <td>39.52</td><td><span class="pill pill-up">+1.36%</span></td>
+            <td>50.00</td><td><span class="pill pill-up">+0.60%</span></td>
+            <td><span style="color:var(--up)">-9.4%</span></td>
+            <td>6.6</td><td>0.91</td>
+            <td><span style="color:var(--gold)">7.6%</span></td>
+            <td><span style="color:var(--orange)">5.5%</span></td>
+            <td>3.01</td><td>9967</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-t"></span><span>中国移动</span></div><div class="codes-s">600941 / 00941</div></td>
+            <td>93.72</td><td><span class="pill pill-up">+0.36%</span></td>
+            <td>80.90</td><td><span class="pill pill-up">+1.06%</span></td>
+            <td><span style="color:var(--down)">+32.8%</span></td>
+            <td>14.8</td><td>1.46</td>
+            <td><span style="color:var(--gold)">5.1%</span></td>
+            <td><span style="color:var(--orange)">5.4%</span></td>
+            <td>4.79</td><td>20294</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-t"></span><span>中国电信</span></div><div class="codes-s">601728 / 00728</div></td>
+            <td>5.75</td><td><span class="pill pill-flat">0.00%</span></td>
+            <td>4.95</td><td><span class="pill pill-up">+1.43%</span></td>
+            <td><span style="color:var(--down)">+33.1%</span></td>
+            <td>15.9</td><td>1.14</td>
+            <td><span style="color:var(--gold)">4.8%</span></td>
+            <td><span style="color:var(--orange)">5.1%</span></td>
+            <td>0.27</td><td>5262</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-t"></span><span>中国联通</span></div><div class="codes-s">600050 / 00762</div></td>
+            <td>4.53</td><td><span class="pill pill-up">+1.34%</span></td>
+            <td>7.20</td><td><span class="pill pill-up">+1.69%</span></td>
+            <td><span style="color:var(--up)">-27.9%</span></td>
+            <td>15.5</td><td>0.84</td>
+            <td><span style="color:var(--gold)">3.8%</span></td>
+            <td><span style="color:var(--orange)">2.2%</span></td>
+            <td>0.17</td><td>1416</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-p"></span><span>长江电力</span></div><div class="codes-s">600900</div></td>
+            <td>26.53</td><td><span class="pill pill-up">+0.19%</span></td>
+            <td>-</td><td>-</td><td>-</td>
+            <td>19.0</td><td>2.93</td>
+            <td><span style="color:var(--gold)">3.5%</span></td>
+            <td>-</td>
+            <td>0.94</td><td>6491</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-p"></span><span>川投能源</span></div><div class="codes-s">600674</div></td>
+            <td>19.05</td><td><span class="pill pill-up">+0.42%</span></td>
+            <td>-</td><td>-</td><td>-</td>
+            <td>17.8</td><td>2.51</td>
+            <td><span style="color:var(--gold)">3.1%</span></td>
+            <td>-</td>
+            <td>0.59</td><td>879</td>
+          </tr>
+          <tr>
+            <td><div class="nm-row"><span class="idot idot-p"></span><span>国投电力</span></div><div class="codes-s">600886</div></td>
+            <td>18.78</td><td><span class="pill pill-up">+1.13%</span></td>
+            <td>-</td><td>-</td><td>-</td>
+            <td>14.2</td><td>2.18</td>
+            <td><span style="color:var(--gold)">3.4%</span></td>
+            <td>-</td>
+            <td>0.64</td><td>1311</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 持仓对比图表 -->
+  <div class="ani" style="animation-delay:0.12s">
+    <div class="stag">持仓对比</div>
+    <div class="charts-grid">
+      <div class="ch-card"><h4>区间涨跌幅（月 / 季 / 年 / 2年 / 3年）</h4><div class="ch-wrap"><canvas id="period-return-chart"></canvas></div></div>
+      <div class="ch-card"><h4>AH溢价率</h4><div class="ch-wrap"><canvas id="ah-chart"></canvas></div></div>
+      <div class="ch-card"><h4>PE估值 近3年对比 (行业均值虚线)</h4><div class="ch-wrap"><canvas id="pe-chart"></canvas></div></div>
+      <div class="ch-card"><h4>股息率 A / H</h4><div class="ch-wrap"><canvas id="div-chart"></canvas></div></div>
+      <div class="ch-card"><h4>市净率 PB</h4><div class="ch-wrap"><canvas id="pb-chart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- 财务趋势 -->
+  <div class="ani" style="animation-delay:0.15s">
+    <div class="stag">财务趋势（季度）</div>
+    <div class="charts-grid">
+      <div class="ch-card"><h4>ROE 净资产收益率 (%)</h4><div class="ch-wrap"><canvas id="roe-chart"></canvas></div></div>
+      <div class="ch-card"><h4>盈利收益率 EPS/股价 (%)</h4><div class="ch-wrap"><canvas id="eps-chart"></canvas></div></div>
+      <div class="ch-card"><h4>营收增长率 (%)</h4><div class="ch-wrap"><canvas id="rev-growth-chart"></canvas></div></div>
+      <div class="ch-card"><h4>净利润增长率 (%)</h4><div class="ch-wrap"><canvas id="profit-growth-chart"></canvas></div></div>
+    </div>
+  </div>
+
+  </div><!-- /sec-report -->
+
+  <!-- ====== SECTION: 持仓研究 ====== -->
+  <div id="sec-research" class="section-wrap">
+
+  <div class="header">
+    <h1>持仓公司横向对比</h1>
+    <span class="sub">银行 / 电信 / 电力 &mdash; AH股对比 &mdash; 财报日历 &mdash; 机构分析框架</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('metrics')">核心指标对比</button>
+    <button class="tab-btn" onclick="switchTab('calendar')">财报日历</button>
+    <button class="tab-btn" onclick="switchTab('framework')">机构分析框架</button>
+    <button class="tab-btn" onclick="switchTab('hegang')">何刚关注点</button>
+  </div>
+
+  <!-- ====== TAB 1: 核心指标横向对比 ====== -->
+  <div id="tab-metrics" class="tab-content active">
+    <div class="card">
+      <div class="card-title">
+        FY2025核心财务与风控指标横向对比
+        <span class="data-note">银行/电信=2025年报 | 电力=业绩快报/三季报(年报预计4月底)</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th class="sticky-col">指标</th>
+              <th colspan="3" style="text-align:center; color:var(--blue);">银行</th>
+              <th colspan="3" style="text-align:center; color:var(--purple);">电信</th>
+              <th colspan="3" style="text-align:center; color:var(--cyan);">电力</th>
+            </tr>
+            <tr>
+              <th class="sticky-col"></th>
+              <th>工商银行</th><th>建设银行</th><th>招商银行</th>
+              <th>中国移动</th><th>中国联通</th><th>中国电信</th>
+              <th>长江电力</th><th>川投能源</th><th>国投电力</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 实时行情 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">实时行情 <span class="data-note" style="font-weight:400;color:var(--text-3);margin-left:8px;">数据源：腾讯财经 · 2026-04-08</span></td></tr>
+            <tr>
+              <td class="sticky-col label">AH溢价率</td>
+              <td>+11%</td><td>+14%</td><td class="val-good">-9%</td>
+              <td class="val-warn">+38%</td><td class="val-bad">+60%</td><td class="val-warn">+50%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">纯A股</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="市盈率(TTM) = 股价/每股收益(滚动12个月)">PE (TTM)</span></td>
+              <td>7.03</td><td>7.10</td><td class="val-best">6.63</td>
+              <td>14.82</td><td>15.3</td><td>15.9</td>
+              <td>19.4</td><td>14.0</td><td>16.8</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="市净率 = 股价/每股净资产">PB</span></td>
+              <td>0.67</td><td>0.69</td><td>0.91</td>
+              <td>1.46</td><td>0.84</td><td>1.19</td>
+              <td>3.5</td><td>1.7</td><td>1.67</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label">A股股息率</td>
+              <td>4.27%</td><td>4.23%</td><td class="val-best">5.10%</td>
+              <td class="val-best">5.09%</td><td>3.7%</td><td>4.3%</td>
+              <td>3.5%</td><td>2.8%</td><td>3.3%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label">H股股息率</td>
+              <td>4.87%</td><td>5.06%</td><td>4.56%</td>
+              <td class="val-best">6.5%</td><td>6.4%</td><td>6.0%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">纯A股</td>
+            </tr>
+
+            <!-- 盈利能力 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">盈利能力</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="营业收入同比增速">营收增速</span></td>
+              <td class="val-good">+2.0%</td><td>+1.9%</td><td>+0.01%</td>
+              <td>+0.9%</td><td>+0.7%</td><td>+0.07%</td>
+              <td>+1.7%</td><td class="val-good">+4.9%</td><td class="val-bad">-8.6%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="归母净利润同比增速">净利润增速</span></td>
+              <td>+0.7%</td><td>+1.0%</td><td class="val-best">+1.2%</td>
+              <td class="val-bad">-0.9%</td><td>+1.1%</td><td>+0.5%</td>
+              <td class="val-best">+5.1%</td><td class="val-bad">-4.5%</td><td>-0.9%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="银行=净利润/营收; 电信=EBITDA Margin; 电力=净利润率">利润率/EBITDA率</span></td>
+              <td>44.0%</td><td>44.5%</td><td class="val-best">44.5%</td>
+              <td class="val-best">32.3%</td><td>28.6%</td><td>29.6%</td>
+              <td class="val-best">39.8%</td><td style="color:var(--text-3);">N/A</td><td>29.1%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="净资产收益率 = 净利润/股东权益">ROE</span></td>
+              <td>8.97%</td><td>9.70%</td><td class="val-best">12.02%</td>
+              <td class="val-best">9.97%</td><td>5.47%</td><td>7.24%</td>
+              <td class="val-best">13.07%</td><td>9.76%</td><td>9.73%</td>
+            </tr>
+
+            <!-- 银行特有 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">银行专有指标</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="净息差 = 净利息收入/生息资产均值">净息差 NIM</span></td>
+              <td>1.28%</td><td>1.34%</td><td class="val-best">1.87%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="非利息收入/营业收入">非息收入占比</span></td>
+              <td>24.2%</td><td>24.7%</td><td class="val-best">36.1%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="成本/营收比率，越低效率越高">成本收入比 CIR</span></td>
+              <td class="val-best">28.1%</td><td>29.2%</td><td>32.0%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="拨备前营业利润增速，剔除拨备政策后的真实盈利趋势">PPOP增速</span></td>
+              <td>~+1%</td><td class="val-bad">-1.0%</td><td>+0.2%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+
+            <!-- 电信特有 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">电信专有指标</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="每用户平均收入（元/月）">移动ARPU</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">49.0</td><td style="color:var(--text-3);">未单独披露</td><td>46.0</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="5G套餐用户/总移动用户">5G渗透率</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td>63.9%</td><td>~60%</td><td class="val-best">68.8%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="资本开支/营业收入，越低越好">Capex/Revenue</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td>14.4%</td><td class="val-best">13.8%</td><td>15.3%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="云/数字化/DICT收入增速">云/DICT增速</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td>+11%</td><td>+5%</td><td>+6%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="EBITDA绝对值（亿元）">EBITDA(亿)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">3,389</td><td>994</td><td>1,439</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="自由现金流 = EBITDA - Capex（亿元）">FCF(亿)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">820</td><td>373</td><td>447</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+
+            <!-- 电力专有 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">电力专有指标</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="发电设备年利用小时数，水电核心运营指标">利用小时数(h)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td>~4,300</td><td>~4,500</td><td>~3,860</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="总装机容量(GW)">装机容量(GW)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">71.8</td><td>37.4</td><td>46.9</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="水电装机占总装机比例">水电占比</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">100%</td><td>93%</td><td>45.4%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="上网电价（元/千瓦时）">上网电价(元/kWh)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td>0.286</td><td>0.278</td><td class="val-best">0.355</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="度电运营成本（元/千瓦时），越低越好">度电成本(元/kWh)</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td class="val-best">~0.117</td><td style="color:var(--text-3);">N/A</td><td>~0.20</td>
+            </tr>
+
+            <!-- 风控 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">风控与资产质量</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="不良贷款/总贷款">不良贷款率 NPL</span></td>
+              <td>1.31%</td><td>1.31%</td><td class="val-best">0.94%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="年化不良贷款新增/总贷款，越低越好">NPL生成率</span></td>
+              <td style="color:var(--text-3);">待披露</td><td style="color:var(--text-3);">待披露</td><td>~0.67%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="贷款损失拨备/不良贷款余额">拨备覆盖率</span></td>
+              <td>213.6%</td><td>233.2%</td><td class="val-best">391.8%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="核心一级资本充足率">CET1 Ratio</span></td>
+              <td>13.57%</td><td class="val-best">14.63%</td><td>13.93%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="风险加权资产收益率">RORWA</span></td>
+              <td>~1.0%</td><td>~1.07%</td><td class="val-best">~1.9%</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">N/A</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="总负债/总资产">资产负债率</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">银行属高杠杆行业 ~92%</td>
+              <td class="val-best">33.2%</td><td>43.9%</td><td>46.2%</td>
+              <td>59.0%</td><td class="val-best">32.8%</td><td>61.2%</td>
+            </tr>
+
+            <!-- 股东回报 -->
+            <tr class="sector-row"><td class="sticky-col" colspan="10">股东回报与估值</td></tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="现金分红/归母净利润">分红率(派息率)</span></td>
+              <td>30%</td><td>30%</td><td class="val-best">35.3%</td>
+              <td class="val-best">75%</td><td>61%</td><td>75%</td>
+              <td class="val-best">71%</td><td>37%</td><td>55%</td>
+            </tr>
+            <tr>
+              <td class="sticky-col label"><span class="tip" data-tip="电信/电力用EV/EBITDA估值更合理；银行用PB-ROE框架">EV/EBITDA</span></td>
+              <td colspan="3" style="color:var(--text-3); text-align:center;">银行用PB-ROE</td>
+              <td>~4.5</td><td class="val-best">~3.5</td><td>~3.8</td>
+              <td>~13.4</td><td style="color:var(--text-3);">N/A</td><td style="color:var(--text-3);">待披露</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="source-note">
+        数据来源："实时行情"为腾讯财经实时数据(2026-04-08)；其余为年报数据（银行/电信=2025年报，电力=业绩快报/三季报）。<br>
+        <strong>阅读提示：</strong><span class="val-best">■ 绿色=同行最优</span> &nbsp; <span class="val-bad">■ 红色=需关注</span> &nbsp; <span class="val-warn">■ 橙色=偏高</span> &nbsp; 灰色N/A = 该行业不适用
+      </div>
+    </div>
+
+    <!-- 机构框架对比表缺失指标说明 -->
+    <div class="card">
+      <div class="card-title">机构框架核心指标 vs 对比表纳入情况</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:100px;">板块</th><th>已纳入对比表</th><th>未纳入及原因</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label"><span class="badge badge-bank">银行</span></td>
+              <td>NIM, CIR, 非息收入占比, PPOP增速, NPL, NPL生成率, 拨备覆盖率, CET1, RORWA</td>
+              <td><strong>关注类迁徙率</strong>: 年报附注级数据，非标准化披露，横向可比性差<br>
+                  <strong>信贷成本</strong>: 可由拨备覆盖率+NPL推算，避免重复<br>
+                  <strong>存款定期化率</strong>: 仅部分银行年报披露，招行与四大行口径不一致<br>
+                  <strong>TLAC缺口</strong>: 仅适用于G-SIBs(工行/建行)，招行不适用，不具可比性</td>
+            </tr>
+            <tr>
+              <td class="label"><span class="badge badge-telecom">电信</span></td>
+              <td>ARPU, 5G渗透率, Capex/Rev, DICT增速, EBITDA, FCF</td>
+              <td><strong>ROIC</strong>: 三家运营商年报均未直接披露，需自行测算，数据精度不足<br>
+                  <strong>DOU(人均流量)</strong>: 与投资价值关联度低，ARPU更直接反映变现能力<br>
+                  <strong>离网率</strong>: 仅中国移动偶尔披露，联通/电信不披露</td>
+            </tr>
+            <tr>
+              <td class="label"><span class="badge badge-power">电力</span></td>
+              <td>利用小时数, 装机容量, 水电占比, 上网电价, 度电成本, EBITDA Margin</td>
+              <td><strong>供电煤耗</strong>: 长江电力/川投纯水电无此指标，国投有但三方不可比<br>
+                  <strong>弃风/弃光率</strong>: 三家均以水电为主，新能源占比小，指标意义有限<br>
+                  <strong>EV/装机容量(元/W)</strong>: 川投为控股型公司，装机口径差异大</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 2: 财报日历 ====== -->
+  <div id="tab-calendar" class="tab-content">
+    <div class="card">
+      <div class="card-title">2026年即将到来的财报披露（预计日期） · 点击日期跳转报告页</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>公司</th>
+              <th>2025年报</th>
+              <th>2026一季报 (预计)</th>
+              <th>2026中报 (预计)</th>
+              <th>2026三季报 (预计)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="label"><span class="badge badge-bank">银行</span> 工商银行</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/601398/page_type/ndbg.phtml" target="_blank">2026-03-28 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2026-04-29</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-bank">银行</span> 建设银行</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/601939/page_type/ndbg.phtml" target="_blank">2026-03-28 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2026-04-29</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-bank">银行</span> 招商银行</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/600036/page_type/ndbg.phtml" target="_blank">2026-03-25 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2026-04-25</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-telecom">电信</span> 中国移动</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/600941/page_type/ndbg.phtml" target="_blank">2026-03-20 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2026-04-22</a></td><td class="date-cell">2026-08 中旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-telecom">电信</span> 中国联通</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/600050/page_type/ndbg.phtml" target="_blank">2026-03-13 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2026-04-25</a></td><td class="date-cell">2026-08 中旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-telecom">电信</span> 中国电信</td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_Bulletin/stockid/601728/page_type/ndbg.phtml" target="_blank">2026-03-25 &#10003;</a></td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2026-04-25</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-power">电力</span> 长江电力</td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2026-04-30 (预计)</a></td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2026-04-30</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-power">电力</span> 川投能源</td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2026-04-30 (预计)</a></td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2026-04-30</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+            <tr><td class="label"><span class="badge badge-power">电力</span> 国投电力</td><td class="date-cell upcoming"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2026-04-30 (预计)</a></td><td class="date-cell"><a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2026-04-30</a></td><td class="date-cell">2026-08 下旬</td><td class="date-cell">2026-10 下旬</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="source-note">
+        黄色高亮 = 近期即将发布 | &#10003; = 已发布 | 点击日期跳转<a href="https://finance.sina.com.cn" target="_blank">新浪财经</a>公告页 | 日期为基于历史规律的预测
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">近三年财报披露日期回溯 · 点击日期查看原始公告</div>
+      <div class="cal-grid">
+        <div class="cal-card">
+          <h3><span class="badge badge-bank">银行</span> 工商银行 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2024-03-28</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2025-03-28</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2026-03-28</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2024-04-29</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2025-04-29</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2026-04-29</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2024-08-29</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601398.phtml" target="_blank">2025-08-29</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-bank">银行</span> 建设银行 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2024-03-28</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2025-03-28</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2026-03-28</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2024-04-29</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2025-04-29</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2026-04-29</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2024-08-29</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601939.phtml" target="_blank">2025-08-29</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-bank">银行</span> 招商银行 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2024-03-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2025-03-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2026-03-25</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2024-04-26</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2025-04-25</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2026-04-25</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2024-08-23</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600036.phtml" target="_blank">2025-08-23</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-telecom">电信</span> 中国移动 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2024-03-21</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2025-03-20</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2026-03-20</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2024-04-22</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2025-04-22</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2026-04-22</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2024-08-08</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600941.phtml" target="_blank">2025-08-08</a></td><td class="date-cell">2026-08 中旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-telecom">电信</span> 中国联通 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2024-03-13</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2025-03-13</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2026-03-13</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2024-04-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2025-04-25</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2026-04-25</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2024-08-14</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600050.phtml" target="_blank">2025-08-14</a></td><td class="date-cell">2026-08 中旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-telecom">电信</span> 中国电信 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2024-03-26</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2025-03-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2026-03-25</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2024-04-26</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2025-04-25</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2026-04-25</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2024-08-22</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/601728.phtml" target="_blank">2025-08-22</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-power">电力</span> 长江电力 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2024-04-30</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2025-04-30</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2026-04-30</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2024-04-30</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2025-04-30</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2026-04-30</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2024-08-28</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600900.phtml" target="_blank">2025-08-28</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-power">电力</span> 川投能源 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2024-04-26</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2025-04-25</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2026-04 下旬</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2024-04-26</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2025-04-25</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2026-04 下旬</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2024-08-23</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600674.phtml" target="_blank">2025-08-22</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+        <div class="cal-card">
+          <h3><span class="badge badge-power">电力</span> 国投电力 <a class="dl-link" href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">新浪公告</a></h3>
+          <table class="cal-table">
+            <tr><th>报告</th><th>FY2023</th><th>FY2024</th><th>FY2025</th></tr>
+            <tr><td class="label">年报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2024-04-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2025-04-30</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2026-04 下旬</a></td></tr>
+            <tr><td class="label">一季报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2024-04-25</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2025-04-30</a></td><td class="date-cell upcoming"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2026-04 下旬</a></td></tr>
+            <tr><td class="label">中报</td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2024-08-22</a></td><td class="date-cell"><a href="https://vip.stock.finance.sina.com.cn/corp/go.php/vCB_AllBulletin/stockid/600886.phtml" target="_blank">2025-08-27</a></td><td class="date-cell">2026-08 下旬</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 3: 机构分析框架 ====== -->
+  <div id="tab-framework" class="tab-content">
+    <div class="framework-grid">
+      <!-- 银行业 -->
+      <div class="card">
+        <div class="card-title"><span class="badge badge-bank">银行</span> 机构分析框架（高盛/中金/华泰）</div>
+        <div class="metric-group">
+          <h4>核心盈利指标</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> 净息差 NIM <span class="en">Net Interest Margin</span> &mdash; 逐季拆分资产端收益率 vs 负债端成本率</li>
+            <li><span class="star">*</span> PPOP 拨备前营业利润 <span class="en">Pre-Provision Operating Profit</span> &mdash; 机构核心关注</li>
+            <li>成本收入比 CIR <span class="en">Cost-to-Income Ratio</span> &mdash; 25-35%为正常区间</li>
+            <li>非息收入占比 <span class="en">Non-Interest Income Ratio</span></li>
+            <li>ROE / RORWA <span class="en">Return on Risk-Weighted Assets</span> &mdash; 高盛/中金常用RORWA</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>资产质量（最关键）</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> 不良贷款生成率 <span class="en">NPL Formation Rate</span> &mdash; <strong>机构最看重的指标</strong></li>
+            <li>关注类贷款迁徙率 <span class="en">SM&rarr;NPL Migration Rate</span> &mdash; 前瞻性指标</li>
+            <li>逾期90天+/不良 偏离度 &mdash; >100% = 不良认定不充分</li>
+            <li>拨备覆盖率 / 拨贷比 <span class="en">PCR / PTL Ratio</span></li>
+            <li>信贷成本 <span class="en">Credit Cost</span> = 减值损失/平均贷款余额</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>估值框架</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> PB-ROE回归框架 &mdash; <strong>中金/华泰首选</strong></li>
+            <li>DDM 三阶段股利折现 &mdash; 假设分红率逐步提升</li>
+            <li>Gordon隐含ROE &mdash; PB=(ROE-g)/(COE-g)</li>
+            <li>PPOP倍数 <span class="en">Price/PPOP</span> &mdash; 剔除拨备政策差异</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>前瞻/差异化</h4>
+          <ul class="metric-list">
+            <li>LPR重定价影响测算 &mdash; 每次降息的NIM冲击量化</li>
+            <li>房地产+城投敞口 &mdash; 对公不良暴露节奏</li>
+            <li>存款定期化趋势 vs 活期占比 &mdash; 负债成本刚性</li>
+            <li>"中特估"分红提升路径 &mdash; 30%&rarr;40%+空间</li>
+            <li>TLAC达标进展 &mdash; 系统重要性银行专有</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 电信业 -->
+      <div class="card">
+        <div class="card-title"><span class="badge badge-telecom">电信</span> 机构分析框架（高盛/大摩/中金）</div>
+        <div class="metric-group">
+          <h4>核心财务指标</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> EBITDA / EBITDA Margin &mdash; <strong>电信业最核心盈利指标</strong></li>
+            <li><span class="star">*</span> 自由现金流 FCF <span class="en">Free Cash Flow</span> &mdash; = EBITDA - Capex</li>
+            <li>Capex/Revenue 资本开支强度 &mdash; 当前13-16%，关注下行拐点</li>
+            <li>折旧摊销 <span class="en">D&A</span> &mdash; 5G资产折旧高峰影响</li>
+            <li>ROIC <span class="en">Return on Invested Capital</span> &mdash; 比ROE更准确</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>运营指标</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> ARPU <span class="en">Average Revenue Per User</span> &mdash; 移动+融合ARPU</li>
+            <li>5G套餐用户数及渗透率 &mdash; 核心成长指标</li>
+            <li>DOU 每用户月均流量 &mdash; 量增价减剪刀差风险</li>
+            <li>离网率/用户流失率 <span class="en">Churn Rate</span></li>
+            <li>DICT/云收入增速 &mdash; 产业数字化"第二曲线"</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>估值框架</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> EV/EBITDA &mdash; <strong>电信业首选估值指标</strong></li>
+            <li>SOTP分部估值 <span class="en">Sum-of-the-Parts</span> &mdash; 传统通信+云/DICT分别估值</li>
+            <li>DCF 现金流折现 &mdash; 核心假设：Capex周期+ARPU趋势</li>
+            <li>EV/Subscriber 每用户企业价值 &mdash; 海外机构横向比较常用</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>前瞻/差异化</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> Capex Peak-out拐点 &mdash; 5G投资见顶=最大催化剂</li>
+            <li>AI算力基础设施 &mdash; 智算中心规模/GPU部署量</li>
+            <li>云收入份额 &mdash; 移动云/天翼云/联通云 IaaS+PaaS</li>
+            <li>分红率提升路径 &mdash; 三家承诺2024-2026逐步至75%+</li>
+            <li>To-B/To-G收入占比 &mdash; 企业/政府客户转型进度</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 电力/公用事业 -->
+      <div class="card">
+        <div class="card-title"><span class="badge badge-power">电力</span> 机构分析框架（中金/华泰/国泰君安）</div>
+        <div class="metric-group">
+          <h4>核心财务指标</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> 度电收入/度电成本 <span class="en">Revenue/Cost per kWh</span> &mdash; 电力行业核心盈利拆分</li>
+            <li><span class="star">*</span> EBITDA / EBITDA Margin &mdash; 重资产行业首选</li>
+            <li>ROE / ROIC &mdash; 高杠杆行业ROIC更有意义</li>
+            <li>经营性现金流 <span class="en">Operating Cash Flow</span></li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>运营指标</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> 利用小时数 <span class="en">Utilization Hours</span> &mdash; <strong>最核心运营指标</strong></li>
+            <li>装机容量(GW) &mdash; 水电/火电/风电/光伏分类</li>
+            <li>上网电价 <span class="en">On-grid Tariff</span> &mdash; 市场化+标杆+绿电溢价</li>
+            <li>供电煤耗 <span class="en">g/kWh</span> &mdash; 火电效率指标</li>
+            <li>弃风/弃光率 <span class="en">Curtailment Rate</span></li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>估值框架</h4>
+          <ul class="metric-list">
+            <li><span class="star">*</span> EV/EBITDA &mdash; 机构首选</li>
+            <li>EV/装机容量（元/W） &mdash; 行业特有横向比较</li>
+            <li>DCF &mdash; 水电/核电长久期稳定现金流</li>
+            <li>NAV 净资产价值法 &mdash; 新能源运营商常用</li>
+            <li>SOTP &mdash; 综合电力集团分部估值</li>
+          </ul>
+        </div>
+        <div class="metric-group">
+          <h4>前瞻/差异化</h4>
+          <ul class="metric-list">
+            <li>容量电价机制 &mdash; 2024年起保障火电固定成本回收</li>
+            <li>新能源装机占比趋势 &mdash; 影响估值中枢（新能源给更高倍数）</li>
+            <li>AI算力用电需求 &mdash; 数据中心电力消耗爆发</li>
+            <li>碳市场价格 &mdash; 火电碳成本 vs 新能源碳收入</li>
+            <li>REITs上市可能性 &mdash; 新能源资产融资渠道</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TAB 5: 何刚关注点提炼 ====== -->
+  <div id="tab-hegang" class="tab-content">
+    <div class="card">
+      <div class="card-title">何刚《投资参考》银行业分析框架提炼</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th style="width:200px;">关注维度</th><th>具体指标</th><th>何刚观点/标准</th><th>对应机构指标</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="label" rowspan="4">盈利能力</td><td>营收增速</td><td>整体1.66%，不算出色</td><td>Revenue Growth</td></tr>
+            <tr><td>净利润率</td><td>均值46.39%；杭州银行55%最高，民生21%最低</td><td>Net Profit Margin</td></tr>
+            <tr><td>净息差 NIM</td><td>行业均值1.54%，优质零售银行>1.8%</td><td>NIM（机构逐季跟踪）</td></tr>
+            <tr><td>非息收入增长</td><td>手续费+投资收益成为盈利新支撑</td><td>Non-Interest Income Ratio</td></tr>
+
+            <tr><td class="label" rowspan="3">风控能力</td><td>资本充足率</td><td>均值>13%，头部>14%</td><td>CAR / CET1 Ratio</td></tr>
+            <tr><td>不良贷款率</td><td>均值~1.15%，宁波/杭州银行0.76%最低</td><td>NPL Ratio + NPL Formation Rate</td></tr>
+            <tr><td>拨备覆盖率</td><td>均值>250%，招行>300%，杭州>500%</td><td>PCR / 拨贷比</td></tr>
+
+            <tr><td class="label" rowspan="3">投资价值</td><td>现金分红</td><td>合计7268亿，增速5.41%高于利润增速</td><td>Dividend Yield / Payout Ratio</td></tr>
+            <tr><td>AH股溢价</td><td>农行36%最高 &rarr; A股可能高估；交行11%最低</td><td>AH Premium</td></tr>
+            <tr><td>股息率对比</td><td>同一银行H股更便宜&rarr;股息率更高&rarr;长期投资价值更高</td><td>Dividend Yield (A vs H)</td></tr>
+
+            <tr><td class="label" rowspan="3">选股逻辑</td><td>头部优选</td><td>工行盈利规模第一；招行零售+财富管理第一</td><td>ROE + NIM + CIR综合</td></tr>
+            <tr><td>特色中小行</td><td>宁波银行增速快+不良低；常熟银行小微息差1.9%</td><td>Niche player alpha</td></tr>
+            <tr><td>回避标的</td><td>民生银行净利润率仅21%，商业价值偏低</td><td>ROE持续低于COE</td></tr>
+
+            <tr><td class="label" rowspan="2">前瞻展望</td><td>2026年机遇</td><td>十五五开局&rarr;信贷回暖；NIM触底修复；盈利增速回升至2-3%</td><td>NIM环比变化是核心验证点</td></tr>
+            <tr><td>结构分化</td><td>零售+财富管理强的银行将显著跑赢</td><td>中收/WM AUM增速</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">何刚关注点 vs 机构框架 &mdash; 补充维度</div>
+      <p style="color:var(--text-2); margin-bottom:12px; font-size:12px;">
+        何刚的分析偏向"投资者友好"的可读性框架，机构研究则更深入量化。以下是机构看但何刚未提及的重要指标：
+      </p>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>机构额外关注</th><th>说明</th><th>对你的投资意义</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="label">PPOP 拨备前利润</td><td>剔除拨备政策后的真实盈利能力</td><td>比净利润更能反映银行真实经营质量，拨备覆盖率高的银行"隐藏利润"更多</td></tr>
+            <tr><td class="label">NPL生成率</td><td>年化不良贷款新增/总贷款</td><td>比不良率更前瞻，下降=资产质量改善信号</td></tr>
+            <tr><td class="label">关注类贷款迁徙率</td><td>关注类&rarr;不良类的转化比率</td><td>最早的资产质量恶化预警信号</td></tr>
+            <tr><td class="label">存款定期化率</td><td>定期存款/总存款占比</td><td>定期化上升=负债成本刚性增加=NIM承压</td></tr>
+            <tr><td class="label">RWA密度</td><td>风险加权资产/总资产</td><td>越低说明资产配置越保守，分红空间越大</td></tr>
+            <tr><td class="label">TLAC缺口</td><td>全球系统重要性银行总损失吸收能力</td><td>影响四大行的资本补充需求和分红上限</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- /sec-research -->
+
+</div>
+
+<script>
+/* ── Section & Tab switching ── */
+function switchSection(id) {
+  document.querySelectorAll('.section-wrap').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.gnav-btn').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('sec-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('tab-' + tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* ── Chart.js: 投资晨报图表 ── */
+(function() {
+  var companies = [
+    { name:'工商银行', industry:'银行', a_price:7.29, ret_month:4.2, ret_quarter:8.68, ret_year:11.91, ret_2year:35.0, ret_3year:60.2, ah_premium:21.4, pe:7.05, pb:0.67, industry_pe:6.93, div_a:4.2, div_h:4.08,
+      financial_history:[
+        {period:'2025',roe:9.45,eps:1.0,revenue_growth:2.0,profit_growth:0.74},
+        {period:'2024',roe:9.88,eps:0.98,revenue_growth:-2.52,profit_growth:0.51},
+        {period:'2025Q3',roe:6.98,eps:0.73,revenue_growth:2.17,profit_growth:0.33},
+        {period:'2025Q2',roe:4.41,eps:0.46,revenue_growth:1.57,profit_growth:-1.39},
+        {period:'2024Q3',roe:7.33,eps:0.72,revenue_growth:-3.82,profit_growth:0.13}
+      ]},
+    { name:'建设银行', industry:'银行', a_price:9.19, ret_month:4.16, ret_quarter:9.25, ret_year:7.13, ret_2year:30.5, ret_3year:51.9, ah_premium:24.2, pe:7.09, pb:0.69, industry_pe:6.93, div_a:4.26, div_h:4.24,
+      financial_history:[
+        {period:'2025',roe:10.04,eps:1.3,revenue_growth:1.88,profit_growth:0.99},
+        {period:'2024',roe:10.69,eps:1.31,revenue_growth:-2.96,profit_growth:0.88},
+        {period:'2025Q3',roe:7.74,eps:1.0,revenue_growth:0.82,profit_growth:0.62},
+        {period:'2025Q2',roe:5.04,eps:0.65,revenue_growth:2.15,profit_growth:-1.37},
+        {period:'2024Q3',roe:8.27,eps:1.01,revenue_growth:-3.3,profit_growth:0.13}
+      ]},
+    { name:'招商银行', industry:'银行', a_price:39.52, ret_month:7.62, ret_quarter:11.8, ret_year:3.63, ret_2year:22.0, ret_3year:15.4, ah_premium:-9.4, pe:6.64, pb:0.91, industry_pe:6.93, div_a:7.62, div_h:5.52,
+      financial_history:[
+        {period:'2025',roe:13.44,eps:5.7,revenue_growth:0.01,profit_growth:1.21},
+        {period:'2024',roe:14.49,eps:5.66,revenue_growth:-0.48,profit_growth:1.22},
+        {period:'2025Q3',roe:10.47,eps:4.43,revenue_growth:-0.51,profit_growth:0.52},
+        {period:'2025Q2',roe:6.93,eps:2.89,revenue_growth:-1.72,profit_growth:0.25},
+        {period:'2024Q3',roe:11.54,eps:4.41,revenue_growth:-2.91,profit_growth:-0.62}
+      ]},
+    { name:'中国移动', industry:'电信', a_price:93.72, ret_month:5.11, ret_quarter:9.84, ret_year:-12.25, ret_2year:-11.3, ret_3year:-3.6, ah_premium:32.8, pe:14.8, pb:1.46, industry_pe:15.39, div_a:5.12, div_h:5.43,
+      financial_history:[
+        {period:'2025',roe:9.9,eps:6.35,revenue_growth:0.91,profit_growth:-0.9},
+        {period:'2024',roe:10.4,eps:6.45,revenue_growth:3.12,profit_growth:5.0},
+        {period:'2025Q3',roe:8.3,eps:5.34,revenue_growth:0.41,profit_growth:4.0},
+        {period:'2025Q2',roe:6.1,eps:3.9,revenue_growth:-0.54,profit_growth:5.0},
+        {period:'2024Q3',roe:8.3,eps:5.18,revenue_growth:2.05,profit_growth:5.1}
+      ]},
+    { name:'中国电信', industry:'电信', a_price:5.75, ret_month:4.76, ret_quarter:7.2, ret_year:-27.64, ret_2year:-4.8, ret_3year:-16.5, ah_premium:33.1, pe:15.86, pb:1.14, industry_pe:15.39, div_a:4.76, div_h:5.07,
+      financial_history:[
+        {period:'2025',roe:7.2,eps:0.36,revenue_growth:0.07,profit_growth:0.5},
+        {period:'2024',roe:7.3,eps:0.36,revenue_growth:3.1,profit_growth:8.4},
+        {period:'2025Q3',roe:6.66,eps:0.34,revenue_growth:0.59,profit_growth:5.03},
+        {period:'2025Q2',roe:5.0,eps:0.25,revenue_growth:1.3,profit_growth:5.5},
+        {period:'2024Q3',roe:6.48,eps:0.32,revenue_growth:2.85,profit_growth:8.1}
+      ]},
+    { name:'中国联通', industry:'电信', a_price:4.53, ret_month:3.83, ret_quarter:5.41, ret_year:-12.33, ret_2year:-3.2, ret_3year:-18.4, ah_premium:-27.9, pe:15.52, pb:0.84, industry_pe:15.39, div_a:3.83, div_h:2.21,
+      financial_history:[
+        {period:'2025',roe:5.39,eps:0.292,revenue_growth:0.68,profit_growth:1.1},
+        {period:'2024',roe:5.49,eps:0.292,revenue_growth:4.56,profit_growth:10.5},
+        {period:'2025Q3',roe:5.13,eps:0.281,revenue_growth:0.99,profit_growth:5.2},
+        {period:'2025Q2',roe:3.73,eps:0.203,revenue_growth:1.45,profit_growth:5.1},
+        {period:'2024Q3',roe:4.99,eps:0.267,revenue_growth:2.99,profit_growth:10.0}
+      ]},
+    { name:'长江电力', industry:'电力', a_price:26.53, ret_month:3.55, ret_quarter:14.77, ret_year:-5.61, ret_2year:4.6, ret_3year:24.9, ah_premium:null, pe:19.0, pb:2.93, industry_pe:17.0, div_a:3.55, div_h:null,
+      financial_history:[
+        {period:'2024',roe:15.71,eps:1.3281,revenue_growth:8.12,profit_growth:19.28},
+        {period:'2025Q3',roe:13.01,eps:1.1522,revenue_growth:-0.89,profit_growth:0.6},
+        {period:'2025Q2',roe:6.09,eps:0.5336,revenue_growth:5.34,profit_growth:14.86},
+        {period:'2024Q3',roe:13.54,eps:1.1454,revenue_growth:14.65,profit_growth:30.2}
+      ]},
+    { name:'川投能源', industry:'电力', a_price:19.05, ret_month:2.8, ret_quarter:6.5, ret_year:-8.2, ret_2year:13.5, ret_3year:37.2, ah_premium:null, pe:17.8, pb:2.51, industry_pe:17.0, div_a:3.1, div_h:null,
+      financial_history:[
+        {period:'2024',roe:14.5,eps:1.07,revenue_growth:7.8,profit_growth:12.5},
+        {period:'2025Q3',roe:10.2,eps:0.75,revenue_growth:-2.1,profit_growth:-5.3},
+        {period:'2024Q3',roe:11.8,eps:0.87,revenue_growth:10.2,profit_growth:15.6}
+      ]},
+    { name:'国投电力', industry:'电力', a_price:18.78, ret_month:3.2, ret_quarter:8.1, ret_year:-3.5, ret_2year:24.7, ret_3year:67.7, ah_premium:null, pe:14.2, pb:2.18, industry_pe:17.0, div_a:3.4, div_h:null,
+      financial_history:[
+        {period:'2024',roe:16.2,eps:1.32,revenue_growth:9.5,profit_growth:22.3},
+        {period:'2025Q3',roe:12.5,eps:1.02,revenue_growth:-1.5,profit_growth:-3.2},
+        {period:'2024Q3',roe:13.8,eps:1.12,revenue_growth:12.1,profit_growth:25.8}
+      ]}
+  ];
+
+  var labels = companies.map(function(c) { return c.name; });
+  Chart.defaults.color = '#555c72';
+  Chart.defaults.font.family = "'Outfit', 'Noto Sans SC', sans-serif";
+  Chart.defaults.font.size = 10;
+  var G = { color: '#1a1e2e', drawBorder: false };
+
+  var CC = ['#4a90ff','#00c9db','#e5a91a','#9b6dff','#00d4aa','#ff6b9d','#ff9f43','#ff4d6a','#c4b5fd'];
+  function cColor(i) { return CC[i % CC.length]; }
+
+  /* 1. 区间涨跌幅 */
+  var prCtx = document.getElementById('period-return-chart');
+  if (prCtx) {
+    new Chart(prCtx, { type:'bar', data:{ labels:labels, datasets:[
+      {label:'月涨跌',data:companies.map(function(c){return c.ret_month;}),backgroundColor:'#4a90ff55',borderColor:'#4a90ff',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.85},
+      {label:'季涨跌',data:companies.map(function(c){return c.ret_quarter;}),backgroundColor:'#e5a91a55',borderColor:'#e5a91a',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.85},
+      {label:'年涨跌',data:companies.map(function(c){return c.ret_year;}),backgroundColor:'#9b6dff55',borderColor:'#9b6dff',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.85},
+      {label:'2年涨跌',data:companies.map(function(c){return c.ret_2year;}),backgroundColor:'#00d4aa55',borderColor:'#00d4aa',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.85},
+      {label:'3年涨跌',data:companies.map(function(c){return c.ret_3year;}),backgroundColor:'#ff9f4355',borderColor:'#ff9f43',borderWidth:1,borderRadius:3,barPercentage:0.75,categoryPercentage:0.85}
+    ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(2)+'%':'N/A');}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
+  }
+
+  /* 2. AH溢价 */
+  var ahCtx = document.getElementById('ah-chart');
+  if (ahCtx) {
+    new Chart(ahCtx, { type:'bar', data:{ labels:labels, datasets:[{
+      data:companies.map(function(c){return c.ah_premium;}),
+      backgroundColor:companies.map(function(_,i){return cColor(i)+'44';}),
+      borderColor:companies.map(function(_,i){return cColor(i);}),
+      borderWidth:1, borderRadius:3, barPercentage:0.65
+    }] }, options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:function(c){return c.raw!==null?c.raw.toFixed(1)+'%':'N/A';}}} }, scales:{ x:{grid:G,ticks:{callback:function(v){return v+'%';}}}, y:{grid:{display:false}} } } });
+  }
+
+  /* 3. PE估值 */
+  var peCtx = document.getElementById('pe-chart');
+  if (peCtx) {
+    var peYears = [];
+    var yearSet = {};
+    companies.forEach(function(c) {
+      if (!c.financial_history) return;
+      c.financial_history.forEach(function(f) {
+        if (f.period && f.eps && (f.period.match(/^\d{4}$/) || f.period.indexOf('Q4') >= 0)) {
+          yearSet[f.period.replace('Q4','').replace('年','')] = 1;
+        }
+      });
+    });
+    peYears = Object.keys(yearSet).sort().slice(-3);
+    if (peYears.length > 0) {
+      var peDatasets = peYears.map(function(yr, yi) {
+        var shades = ['#4a90ff','#e5a91a','#9b6dff'];
+        return { label:yr+'年报PE', data:companies.map(function(c) {
+          if (!c.a_price || !c.financial_history) return null;
+          var eps = null;
+          c.financial_history.forEach(function(f){ if(f.period.replace('Q4','')===yr && f.eps) eps=f.eps; });
+          return (eps && eps > 0) ? Math.round(c.a_price / eps * 10) / 10 : null;
+        }), backgroundColor:shades[yi%3]+'44', borderColor:shades[yi%3], borderWidth:1, borderRadius:3, barPercentage:0.75, categoryPercentage:0.8 };
+      });
+      var indAvg = {};
+      companies.forEach(function(c){ if(c.pe){if(!indAvg[c.industry])indAvg[c.industry]={sum:0,cnt:0};indAvg[c.industry].sum+=c.pe;indAvg[c.industry].cnt++;} });
+      peDatasets.push({ label:'行业均值', data:companies.map(function(c){ var a=indAvg[c.industry]; return a?Math.round(a.sum/a.cnt*10)/10:null; }), type:'line', borderColor:'#ff4d6a', borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:false });
+      new Chart(peCtx, { type:'bar', data:{ labels:labels, datasets:peDatasets }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}}}, scales:{x:{grid:{display:false}},y:{grid:G}} } });
+    }
+  }
+
+  /* 4. 股息率 */
+  var dCtx = document.getElementById('div-chart');
+  if (dCtx) {
+    new Chart(dCtx, { type:'bar', data:{ labels:labels, datasets:[
+      {label:'A股股息率',data:companies.map(function(c){return c.div_a;}),backgroundColor:'#4a90ff55',borderColor:'#4a90ff',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8},
+      {label:'H股股息率',data:companies.map(function(c){return c.div_h;}),backgroundColor:'#9b6dff55',borderColor:'#9b6dff',borderWidth:1,borderRadius:3,barPercentage:0.65,categoryPercentage:0.8}
+    ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}},tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(1)+'%':'N/A');}}}}, scales:{x:{grid:{display:false}},y:{grid:G,ticks:{callback:function(v){return v+'%';}}}} } });
+  }
+
+  /* 5. PB */
+  var pbCtx = document.getElementById('pb-chart');
+  if (pbCtx) {
+    new Chart(pbCtx, { type:'bar', data:{ labels:labels, datasets:[
+      { label:'PB', data:companies.map(function(c){return c.pb;}), backgroundColor:companies.map(function(_,i){return cColor(i)+'44';}), borderColor:companies.map(function(_,i){return cColor(i);}), borderWidth:1, borderRadius:3, barPercentage:0.55 },
+      { label:'PB=1', data:companies.map(function(){return 1;}), type:'line', borderColor:'#ff4d6a', borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:false }
+    ] }, options:{ responsive:true,maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{boxWidth:8,padding:6,font:{size:9}}}}, scales:{x:{grid:{display:false}},y:{grid:G,beginAtZero:true}} } });
+  }
+
+  /* 财务趋势 */
+  function buildTrend(id, field, suf, transform) {
+    var ctx = document.getElementById(id);
+    if (!ctx) return;
+    var ps = {};
+    companies.forEach(function(c) { if(!c.financial_history)return; c.financial_history.forEach(function(f){ps[f.period]=1;}); });
+    var ap = Object.keys(ps).sort();
+    if (!ap.length) return;
+    var dsets = companies.map(function(c, i) {
+      var color = cColor(i);
+      var dm = {};
+      if(c.financial_history) c.financial_history.forEach(function(f){
+        var val = f[field];
+        if (transform && val !== null && val !== undefined) val = transform(val, c);
+        dm[f.period] = val;
+      });
+      return { label:c.name, data:ap.map(function(p){return dm[p]!==undefined?dm[p]:null;}), borderColor:color, backgroundColor:color+'22', borderWidth:1.5, pointRadius:2, pointHoverRadius:4, tension:0.3, spanGaps:true };
+    });
+    new Chart(ctx, { type:'line', data:{labels:ap,datasets:dsets}, options:{ responsive:true,maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{ legend:{position:'bottom',labels:{boxWidth:6,padding:6,font:{size:9}}}, tooltip:{callbacks:{label:function(c){return c.dataset.label+': '+(c.raw!==null?c.raw.toFixed(2)+suf:'N/A');}}} }, scales:{ x:{grid:{display:false},ticks:{font:{size:8},maxRotation:45}}, y:{grid:G,ticks:{callback:function(v){return v+suf;}}} } } });
+  }
+  buildTrend('roe-chart','roe','%');
+  buildTrend('eps-chart','eps','%', function(eps, c) {
+    return (c.a_price && eps) ? Math.round(eps / c.a_price * 100 * 100) / 100 : null;
+  });
+  buildTrend('rev-growth-chart','revenue_growth','%');
+  buildTrend('profit-growth-chart','profit_growth','%');
+})();
+</script>
+
+</body>
+</html>
